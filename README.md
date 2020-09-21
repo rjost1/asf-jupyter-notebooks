@@ -19,8 +19,5 @@ Python Tools
 - python 3.7
 - numpy 
 - matplotlib
-- scikit-fuzzy
-- pandas 
-- gdal
-- pyproj
-- rasterio 
+- h5py 
+- gdal 
