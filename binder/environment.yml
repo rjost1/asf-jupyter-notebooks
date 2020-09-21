@@ -4,6 +4,7 @@ channels:
   - defaults
 dependencies:
   - python=3.7
+  - python=2.7
   - pip
   - h5py
   - numpy
