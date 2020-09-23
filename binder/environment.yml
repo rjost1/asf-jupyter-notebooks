@@ -9,6 +9,7 @@ dependencies:
   - numpy
   - matplotlib
   - gdal
+  - scipy
   - pip:
       - awscli
   

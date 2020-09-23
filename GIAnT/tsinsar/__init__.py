@@ -4,6 +4,13 @@
  the time-series InSAR scripts and our libraries. Imports
  all the functions from our libraries into one single module.''' 
 
+## For Binder ##
+import sys
+tsinsar_pth = '/home/jovyan/GIAnT'
+if tsinsar_pth not in sys.path:
+    sys.path.append(tsinsar_pth)
+###############
+
 from .tsutils import *
 from .stackutils import *
 from .tsio import *

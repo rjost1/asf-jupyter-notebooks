@@ -9,6 +9,13 @@ network deramping.The results are stored in a HDF5 file.
     modifications:
         DB  AUG 2017    try to import pyaps'''
 
+## For Binder ##
+import sys
+tsinsar_pth = '/home/jovyan/GIAnT'
+if tsinsar_pth not in sys.path:
+    sys.path.append(tsinsar_pth)
+###############
+
 import numpy as np
 import tsinsar as ts
 import sys

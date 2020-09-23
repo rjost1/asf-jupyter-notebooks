@@ -25,7 +25,13 @@ according to a threshold and creates the igram matrix. The results are
 20121217: Modified for ADORE.
 
 '''
-     
+## For Binder ##
+import sys
+tsinsar_pth = '/home/jovyan/GIAnT'
+if tsinsar_pth not in sys.path:
+    sys.path.append(tsinsar_pth)
+###############
+
 import numpy as np
 import tsinsar as ts
 import sys
