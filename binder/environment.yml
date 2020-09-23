@@ -11,4 +11,4 @@ dependencies:
   - gdal
   - pip:
       - awscli
-      - git+https://github.com/tylere/pykml.git
+  
