@@ -14,7 +14,7 @@ import numpy as np
 import scipy.linalg as la
 import scipy.stats as st
 import matplotlib.pyplot as plt
-import matutils as mu
+from . import matutils as mu
 
 ############################Math Utils#################################
 ##Compute standard deviation of array / matrix
@@ -81,7 +81,7 @@ def getvalidpix(igps,minnum=5,neigh=3):
 
     idata = np.zeros(ngps,np.bool)
 
-    for k in xrange(ngps):
+    for k in range(ngps):
         data = igps.mask[miny[k]:maxy[k], minx[k]:maxx[k]]
         idata[k] = (np.nansum(1*data.flatten())>0)
 
@@ -127,7 +127,7 @@ def estramp_gps(phs, gps, poly, minnum=5, neigh=3):
     miny = (gps.yi-neigh).clip(0,nn-1)
     maxy = (gps.yi+neigh).clip(0,nn-1)
 
-    for k in xrange(ngps):
+    for k in range(ngps):
         data = phs[miny[k]:maxy[k], minx[k]:maxx[k]]
         idisp[k] =  nanmean(data)
         idisperr[k] = st.nanstd(data.flatten())
@@ -227,10 +227,10 @@ def LookDown(A,n,method,var=False):
         sB = np.zeros((newn,newm))*np.nan
 
     if method in ('MEAN'):
-        for y in xrange(0,newn):
+        for y in range(0,newn):
             miny= y*n
             maxy= np.min((nn,(y+1)*n))
-            for x in xrange(0,newm):
+            for x in range(0,newm):
                 minx = x*n
                 maxx = np.min((mm,(x+1)*n))
                 Asub = A[miny:maxy,minx:maxx]
@@ -242,10 +242,10 @@ def LookDown(A,n,method,var=False):
                         sB[y,x] = st.nanstd(Asub.flatten())
 
     elif method in ('MEDIAN'):
-        for y in xrange(0,newn):
+        for y in range(0,newn):
             miny= y*n
             maxy= np.min((nn,(y+1)*n))
-            for x in xrange(0,newm):
+            for x in range(0,newm):
                 minx = x*n
                 maxx = np.min((mm,(x+1)*n))
                 Asub = A[ymin:ymax,xmin:xmax]

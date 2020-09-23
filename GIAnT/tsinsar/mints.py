@@ -14,8 +14,8 @@
 
 import numpy as np
 import scipy.sparse as sp
-import tsutils as tu
-import logmgr
+from . import tsutils as tu
+from . import logmgr
 
 logger = logmgr.logger('giant')
 
@@ -51,7 +51,7 @@ def inpaint(ain):
         
     hv_springs = np.zeros((4 * nnan, 2), dtype=np.int)
     cnt = 0
-    for kkk in xrange(nnan):
+    for kkk in range(nnan):
         ypos = iin[kkk]
         xpos = jjn[kkk]
         indc = ypos * mmm + xpos

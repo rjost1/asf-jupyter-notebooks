@@ -255,8 +255,8 @@ def load_grd(fname, var='z', shape=None):
     gdal.UseExceptions()
     try:
         dataset = gdal.Open(fname, GA_ReadOnly )
-    except RuntimeError, e:
-        print('Error: GDAL library failed to open GMT file: ' + fname)
+    except RuntimeError as e:
+        print(('Error: GDAL library failed to open GMT file: ' + fname))
         print(e)
         sys.exit(1)
 
@@ -441,7 +441,7 @@ def write_rsc(rdict, fname):
         None'''
 
     fout = open(fname, 'w')
-    for kk in rdict.keys():
+    for kk in list(rdict.keys()):
         fout.write('{0:<35} \t\t {1:<20}\n'.format(kk, str(rdict[kk])))
     fout.close()
 
@@ -497,8 +497,8 @@ def get_grddims(fname, var='z'):
     gdal.UseExceptions()
     try:
         dataset = gdal.Open(fname, GA_ReadOnly )
-    except RuntimeError, e:
-        print('Error: GDAL library failed to open GMT file: ' + fname)
+    except RuntimeError as e:
+        print(('Error: GDAL library failed to open GMT file: ' + fname))
         print(e)
         sys.exit(1)
 
@@ -614,7 +614,7 @@ def saveh5(fname, ddict):
 
     fout = h5py.File(fname, 'w')   #No subgroups
 
-    for each in ddict.keys():
+    for each in list(ddict.keys()):
         sdat = fout.create_dataset(each, data=ddict[each])
 
     fout.close()
@@ -768,7 +768,7 @@ class ProgressBar:
     def close(self):
         """Prints a blank space at the end to ensure proper printing
         of future statements."""
-        print ' '
+        print(' ')
 
 ################################End of progress bar class####################################
 
@@ -791,7 +791,7 @@ class LineCounter:
             * None'''
         self.txt = txt
         self.count = 0
-        print '\n'
+        print('\n')
 
     def update(self, newcount):
         '''Update the counter.'''
@@ -808,7 +808,7 @@ class LineCounter:
         sys.stdout.flush()
 
     def close(self):
-        print '\n'
+        print('\n')
 
 ############################################################
 # Program is part of GIAnT v1.0                            #

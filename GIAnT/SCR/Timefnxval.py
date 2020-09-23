@@ -72,7 +72,7 @@ class TSBAS:
         else:
             self.nm = npar
     
-        for sind in xrange(nsar):
+        for sind in range(nsar):
             inds = np.delete(np.arange(nifg),np.flatnonzero(Jmat[:,sind]))
             self.inds.append(inds)
 
@@ -90,7 +90,7 @@ class TSBAS:
 
         npix = data.shape[1]
         parms = np.zeros((self.nset, self.nsar, npix))
-        for k in xrange(self.nset):
+        for k in range(self.nset):
             [phat,res,n,s] = np.linalg.lstsq(self.Gs[k],data[self.inds[k]],rcond=1.0e-8)
             dhat = np.dot(self.Hs, phat[0:self.nm,:])
             dhat = dhat - dhat[self.masterind,:]
@@ -219,7 +219,7 @@ if __name__ == '__main__':
 
     ####Actual SBAS processing
     progb = ts.ProgressBar(minValue=0,maxValue=Ny)
-    for p in xrange(Ny):
+    for p in range(Ny):
         dph = igram[:,p,:]
         meanv,stdv = mysbas.invert(dph)
         recons[:,p,:] = meanv

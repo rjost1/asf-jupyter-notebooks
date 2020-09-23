@@ -198,11 +198,11 @@ def phi2covar(phi,frac,scale,plot=False,ramp_remov=True,maxdist=False):
 	qual = np.sqrt(np.sum((ecv - y)**2)/len(y))
 
 	if plot:
-		print 'SIGMA:', par[0]
-		print 'LAMBDA:', par[1]
+		print('SIGMA:', par[0])
+		print('LAMBDA:', par[1])
                 plt.figure()
 		if ramp_remov:
-			print 'RAMP:' , a, b
+			print('RAMP:' , a, b)
 			plt.subplot(221)
 			plt.imshow(phi)
 			plt.colorbar()

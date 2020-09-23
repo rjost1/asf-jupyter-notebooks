@@ -47,8 +47,8 @@ def printcoords(event):
 	    ii = np.int(np.floor(event.ydata))
 	    jj = np.int(np.floor(event.xdata))
 
-	    print 'Average Velocity on pixel %d,%d : %f'%(ii,jj,velo[ii,jj])
-	    print 'Cumulative Time  on pixel %d,%d : %f'%(ii,jj,ct[ii,jj])
+	    print('Average Velocity on pixel %d,%d : %f'%(ii,jj,velo[ii,jj]))
+	    print('Cumulative Time  on pixel %d,%d : %f'%(ii,jj,ct[ii,jj]))
     else:
 	return
 

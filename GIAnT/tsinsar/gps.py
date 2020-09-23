@@ -9,18 +9,18 @@
     numpy'''
 
 import numpy as np
-import tsio
-import tsutils as tu
-import schutils as sch
+from . import tsio
+from . import tsutils as tu
+from . import schutils as sch
 import datetime as dt
-import logmgr
+from . import logmgr
 import matplotlib.pyplot as plt
 try:
     import solver.tikh as tikh
 except:
     pass
 
-import sopac
+from . import sopac
 
 logger = logmgr.logger('gps')
 # determine if a point is inside a given polygon or not
@@ -171,7 +171,7 @@ class STN:
             num = len(win)
             points = np.zeros((num+1,), dtype=float)
             tpts = [win[0][0]]
-            for jj in xrange(num):
+            for jj in range(num):
                 disp = amp[jj] * (win[jj][1] - win[jj][0])
                 points[jj+1] = points[jj] + disp
                 tpts.append(win[jj][1])
@@ -275,7 +275,7 @@ class GPS:
         
         flag = (np.zeros(len(self.lat)) > 1)
                 
-        for k in xrange(len(self.lat)):
+        for k in range(len(self.lat)):
             flag[k] = point_inside_polygon(self.lat[k],self.lon[k],bndry)
             if flag[k]:
                 dist = (lats-self.lat[k])**2 + (lons-self.lon[k])**2
@@ -301,7 +301,7 @@ class GPS:
 		self.vu = self.vu[flag]
 
         logger.info('Number of GPS stations in Frame: %d'% (len(self.name)))
-        print 'Stations: ', len(self.name)
+        print('Stations: ', len(self.name))
 
     def lltoij_sch(self, par):
         """
@@ -349,12 +349,12 @@ class GPS:
             incang = tsio.load_flt(inc, fwid, flen)
             incdeg = incang[self.yi, self.xi]
             self.los = np.zeros((len(self.xi),3))
-            for k in xrange(len(self.xi)):
+            for k in range(len(self.xi)):
                 self.los[k,:] = self.hdginc2los(hdg,incdeg[k])
         # BVR 08/14/12: added support for array of incidence angles
         elif isinstance(inc, np.ndarray):
             self.los = np.zeros((inc.size,3))  # shape (nstat,3)
-            for k in xrange(inc.size):
+            for k in range(inc.size):
                 self.los[k,:] = self.hdginc2los(hdg, inc[k]*180.0/np.pi) 
         else:
             self.los = self.hdginc2los(hdg,inc)
@@ -367,7 +367,7 @@ class GPS:
         logger.info('READING GPS data files')
         progb = tsio.ProgressBar(maxValue = nstations)
 
-        for k in xrange(nstations):
+        for k in range(nstations):
             if len(self.los.shape) == 2:
                 los = self.los[k,:]
             else:
@@ -390,8 +390,8 @@ class GPS:
         ntims = len(daylist)
         sar_ts = np.zeros((nstns, ntims))
         sar_terr = np.zeros((nstns, ntims))
-        for k in xrange(nstns):
-            for dd in xrange(ntims):
+        for k in range(nstns):
+            for dd in range(ntims):
                 disp,disperr = self.stns[k].get_data(daylist[dd], model=model)
                 sar_ts[k,dd] = disp
                 sar_terr[k,dd] = disperr
@@ -412,7 +412,7 @@ class GPS:
 	U = tm*u 
 
         ndims = len(self.los.shape)
-	for n in xrange(nstns):
+	for n in range(nstns):
             if ndims == 1:
                 sar_ts[n,:] = self.los[0]*E[n,:] + self.los[1]*N[n,:] + self.los[2]*U[n,:]
             else:

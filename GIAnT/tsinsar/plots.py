@@ -53,9 +53,9 @@ def imagemany(arrdict,save=None,horz=True,master=None,show=False,format='png', i
     if show and ion:
         plt.ion()
         
-    num = len(arrdict.keys())
+    num = len(list(arrdict.keys()))
     shrfac = 1.0/(1.0*num)
-    keys = arrdict.keys()
+    keys = list(arrdict.keys())
     
 
     if master is not None:
@@ -63,7 +63,7 @@ def imagemany(arrdict,save=None,horz=True,master=None,show=False,format='png', i
         colorlim = [np.nanmin(mas),np.nanmax(mas)]
     
     plt.figure('Displacement')
-    for k in xrange(num):
+    for k in range(num):
         if horz:
             frame = 100+num*10+(k+1)
         else:

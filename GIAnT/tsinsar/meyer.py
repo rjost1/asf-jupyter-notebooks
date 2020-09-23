@@ -12,7 +12,7 @@ Based on Wavelab850 package from Stanford University.
 import numpy as np
 import h5py
 from scipy.ndimage.filters import convolve1d
-import logmgr
+from . import logmgr
 
 logger = logmgr.logger('giant')
 
@@ -365,47 +365,47 @@ def fwt2_ym(xinp,deg,L):
     cr = np.zeros((nn,powL2))
     fx = np.fft.fft(x,axis=-1)     #Fourier transform in X-direction (Const).
 
-    for m in xrange(nn):
+    for m in range(nn):
         cr[m,:] = CoarseMeyerCoeff(fx[m,:],L,nn,deg)
     
     
     #Vertical Transform
     crc = np.zeros((powL2,powL2))
     y = np.fft.fft(cr,axis=0)
-    for m in xrange(powL2):
+    for m in range(powL2):
         crc[:,m] = CoarseMeyerCoeff(y[:,m],L,nn,deg)
 
     w[0:powL2,0:powL2] = np.flipud(crc)
 
-    for j in xrange(L,np.int_(J-1)):
+    for j in range(L,np.int_(J-1)):
         pow2j = 2**j
         if j==L :
             dr = cr
         else:
             dr = np.zeros((nn,pow2j))
-            for m in xrange(nn):
+            for m in range(nn):
                 dr[m,:] = CoarseMeyerCoeff(fx[m,:],j,nn,deg)
 
             y = np.fft.fft(dr,axis=0)
 
         drc = np.zeros((pow2j,pow2j))
-        for m in xrange(pow2j):
+        for m in range(pow2j):
             drc[:,m] = DetailMeyerCoeff(y[:,m],j,nn,deg)
 
         #Quadrant 2
         w[0:pow2j,pow2j:2*pow2j] = np.flipud(drc)
 
-        for m in xrange(nn):
+        for m in range(nn):
             dr[m,:] = DetailMeyerCoeff(fx[m,:],j,nn,deg)
 
         y = np.fft.fft(dr,axis=0)
-        for m in xrange(pow2j):
+        for m in range(pow2j):
             drc[:,m] = CoarseMeyerCoeff(y[:,m],j,nn,deg)
 
         #Quadrant 3
         w[pow2j:pow2j*2,0:pow2j] = np.flipud(drc)
 
-        for m in xrange(pow2j):
+        for m in range(pow2j):
             drc[:,m] = DetailMeyerCoeff(y[:,m],j,nn,deg)
 
         #Quadrant 4
@@ -415,28 +415,28 @@ def fwt2_ym(xinp,deg,L):
     pow2j =np.int_(2**(J-1))
 
     dr = np.zeros((nn,pow2j))
-    for m in xrange(nn):
+    for m in range(nn):
         dr[m,:] = CoarseMeyerCoeff(fx[m,:],(J-1),nn,deg)
 
     drc = np.zeros((pow2j,pow2j))
     y = np.fft.fft(dr,axis=0)
-    for m in xrange(pow2j):
+    for m in range(pow2j):
         drc[:,m] = FineMeyerCoeff(y[:,m],nn,deg)
 
     #Quadrant 2
     w[0:pow2j,pow2j:pow2j*2] = np.flipud(drc)
 
-    for m in xrange(nn):
+    for m in range(nn):
         dr[m,:] = FineMeyerCoeff(fx[m,:],nn,deg)
 
     y = np.fft.fft(dr,axis=0)
-    for m in xrange(pow2j):
+    for m in range(pow2j):
         drc[:,m] = CoarseMeyerCoeff(y[:,m],J-1,nn,deg)
 
     #Quadrant 3
     w[pow2j:2*pow2j,0:pow2j] = np.flipud(drc)
 
-    for m in xrange(pow2j):
+    for m in range(pow2j):
         drc[:,m] = FineMeyerCoeff(y[:,m],nn,deg)
 
     w[pow2j:pow2j*2,pow2j:2*pow2j] = np.flipud(drc)
@@ -711,49 +711,49 @@ def iwt2_ym(x,L,deg):
     cr = np.zeros((nn,powL2))
 
     #Quadrant 1. Coarse.
-    for m in xrange(powL2):
+    for m in range(powL2):
         w = CoarseMeyerProj(crc[:,m],L,nn,deg)
         y = np.real(np.fft.ifft(w))
         cr[:,m] = y
 
-    for m in xrange(nn):
+    for m in range(nn):
         w = CoarseMeyerProj(cr[m,:],L,nn,deg)
         ymat[m,:] = np.real(np.fft.ifft(w))
 
-    for j in xrange(L,np.int_(J-1)):
+    for j in range(L,np.int_(J-1)):
         pow2j = 2**j
 
         #Quadrant 2. Horizontal.
         drc =np.flipud(x[0:pow2j,pow2j:2*pow2j])
         dr = np.zeros((nn,pow2j))
 
-        for m in xrange(pow2j):
+        for m in range(pow2j):
             w = DetailMeyerProj(drc[:,m],j,nn,deg)
             dr[:,m] = np.real(np.fft.ifft(w))
 
-        for m in xrange(nn):
+        for m in range(nn):
             w  = CoarseMeyerProj(dr[m,:],j,nn,deg)
             ymat[m,:] = ymat[m,:] + np.real(np.fft.ifft(w))
 
         #Quadrant 3. Vertical.
         drc = np.flipud(x[pow2j:2*pow2j,0:pow2j])
-        for m in xrange(pow2j):
+        for m in range(pow2j):
             w = CoarseMeyerProj(drc[:,m],j,nn,deg)
             dr[:,m] = np.real(np.fft.ifft(w))
 
 
-        for m in xrange(nn):
+        for m in range(nn):
             w = DetailMeyerProj(dr[m,:],j,nn,deg)
             ymat[m,:] = ymat[m,:] + np.real(np.fft.ifft(w))
 
         #Quadrant 4. Diagonal.
         drc = np.flipud(x[pow2j:2*pow2j,pow2j:2*pow2j])
 
-        for m in xrange(pow2j):
+        for m in range(pow2j):
             w = DetailMeyerProj(drc[:,m],j,nn,deg)
             dr[:,m] = np.real(np.fft.ifft(w))
 
-        for m in xrange(nn):
+        for m in range(nn):
             w = DetailMeyerProj(dr[m,:],j,nn,deg)
             ymat[m,:] = ymat[m,:] + np.real(np.fft.ifft(w))
 
@@ -764,31 +764,31 @@ def iwt2_ym(x,L,deg):
     # Quadrant 2.Horizontal.
     drc = np.flipud(x[0:pow2j,pow2j:2*pow2j])
     dr = np.zeros((nn,pow2j))
-    for m in xrange(pow2j):
+    for m in range(pow2j):
         w = FineMeyerProj(drc[:,m],J-1,nn,deg)
         dr[:,m] = np.real(np.fft.ifft(w))
 
-    for m in xrange(nn):
+    for m in range(nn):
         w = CoarseMeyerProj(dr[m,:],J-1,nn,deg)
         ymat[m,:] = ymat[m,:] + np.real(np.fft.ifft(w))
 
     #Quadrant 3.Vertical.
     drc = np.flipud(x[pow2j:2*pow2j,0:pow2j])
-    for m in xrange(pow2j):
+    for m in range(pow2j):
         w = CoarseMeyerProj(drc[:,m],J-1,nn,deg)
         dr[:,m] = np.real(np.fft.ifft(w))
 
-    for m in xrange(nn):
+    for m in range(nn):
         w = FineMeyerProj(dr[m,:],J-1,nn,deg)
         ymat[m,:] = ymat[m,:] + np.real(np.fft.ifft(w))
 
     #Quadrant 4. Diagonal.
     drc = np.flipud(x[pow2j:2*pow2j,pow2j:2*pow2j])
-    for m in xrange(pow2j):
+    for m in range(pow2j):
         w = FineMeyerProj(drc[:,m],J-1,nn,deg)
         dr[:,m] = np.real(np.fft.ifft(w))
 
-    for m in xrange(nn):
+    for m in range(nn):
         w = FineMeyerProj(dr[m,:],J-1,nn,deg)
         ymat[m,:] = ymat[m,:] + np.real(np.fft.ifft(w))
 
@@ -828,18 +828,18 @@ def fwt2_meyer(xinp,deg,L):
     #Horizontal Transform
     cr = np.zeros((nn,powL2))
     fx = np.fft.fft(x,axis=-1)     #Fourier transform in X-direction (Const).
-    for m in xrange(nn):
+    for m in range(nn):
         cr[m,:] = CoarseMeyerCoeff(fx[m,:],L,mm,deg)  #From nn to mm
 
     #Vertical Transform
     crc = np.zeros((powR2,powL2))     ####From L2 to R2
     y = np.fft.fft(cr,axis=0)
-    for m in xrange(powL2):
+    for m in range(powL2):
         crc[:,m] = CoarseMeyerCoeff(y[:,m],R,nn,deg) #J to R
 
     w[0:powR2,0:powL2] = np.flipud(crc)
 
-    for j in xrange(L,np.int_(J-1)):
+    for j in range(L,np.int_(J-1)):
         r = j+dR
         pow2j = 2**j
         pow2r = 2**(j+dR)
@@ -849,33 +849,33 @@ def fwt2_meyer(xinp,deg,L):
         else:
             # Horizontal again
             dr = np.zeros((nn,pow2j))
-            for m in xrange(nn):
+            for m in range(nn):
                 dr[m,:] = CoarseMeyerCoeff(fx[m,:],j,mm,deg) #nn to mm
 
             y = np.fft.fft(dr,axis=0)
 
         #Vertical
         drc = np.zeros((pow2r,pow2j))  #pow2j to pow2r
-        for m in xrange(pow2j):
+        for m in range(pow2j):
             drc[:,m] = DetailMeyerCoeff(y[:,m],r,nn,deg) #j to r
 
         #Quadrant 2
         w[0:pow2r,pow2j:2*pow2j] = np.flipud(drc)    #pow2j to pow2r
 
         #Horizontal
-        for m in xrange(nn):
+        for m in range(nn):
             dr[m,:] = DetailMeyerCoeff(fx[m,:],j,mm,deg)  #nn to mm
 
         #Vertical
         y = np.fft.fft(dr,axis=0)
-        for m in xrange(pow2j):
+        for m in range(pow2j):
             drc[:,m] = CoarseMeyerCoeff(y[:,m],r,nn,deg)  #j to r
 
         #Quadrant 3
         w[pow2r:pow2r*2,0:pow2j] = np.flipud(drc)   #pow2j to pow2r
 
         #Vertical
-        for m in xrange(pow2j):
+        for m in range(pow2j):
             drc[:,m] = DetailMeyerCoeff(y[:,m],r,nn,deg) #j to r
 
         #Quadrant 4
@@ -888,33 +888,33 @@ def fwt2_meyer(xinp,deg,L):
     dr = np.zeros((nn,pow2j))
 
     #Horizontal
-    for m in xrange(nn):
+    for m in range(nn):
         dr[m,:] = CoarseMeyerCoeff(fx[m,:],(J-1),mm,deg)  #nn to mm
 
     drc = np.zeros((pow2r,pow2j))   #pow2j to pow2r
 
     #Vertical
     y = np.fft.fft(dr,axis=0)
-    for m in xrange(pow2j):
+    for m in range(pow2j):
         drc[:,m] = FineMeyerCoeff(y[:,m],nn,deg)
 
     #Quadrant 2
     w[0:pow2r,pow2j:pow2j*2] = np.flipud(drc)    #pow2j to pow2r
 
     #Horizontal
-    for m in xrange(nn):
+    for m in range(nn):
         dr[m,:] = FineMeyerCoeff(fx[m,:],mm,deg)   #nn to mm
 
     #Vertical
     y = np.fft.fft(dr,axis=0)
-    for m in xrange(pow2j):
+    for m in range(pow2j):
         drc[:,m] = CoarseMeyerCoeff(y[:,m],K-1,nn,deg) # J to K
 
     #Quadrant 3
     w[pow2r:2*pow2r,0:pow2j] = np.flipud(drc)
 
     #Vertical
-    for m in xrange(pow2j):
+    for m in range(pow2j):
         drc[:,m] = FineMeyerCoeff(y[:,m],nn,deg)
 
     w[pow2r:pow2r*2,pow2j:2*pow2j] = np.flipud(drc)    #j to r
@@ -950,18 +950,18 @@ def iwt2_meyer(x,L,deg):
 
     #Quadrant 1. Coarse.
     #Vertical.
-    for m in xrange(powL2):
+    for m in range(powL2):
         w[:,m] = CoarseMeyerProj(crc[:,m],R,nn,deg)   #L to R
     
     cr = np.real(np.fft.ifft(w,axis=0))
 
     w = np.zeros((nn,mm))
     #Horizontal
-    for m in xrange(nn):
+    for m in range(nn):
         w = CoarseMeyerProj(cr[m,:],L,mm,deg)    #nn to mm
         ymat[m,:] = np.real(np.fft.ifft(w))
 
-    for j in xrange(L,np.int(J-1)):
+    for j in range(L,np.int(J-1)):
         r = np.int(j+dR)
         pow2j = 2**j
         pow2r = 2**r
@@ -971,23 +971,23 @@ def iwt2_meyer(x,L,deg):
         dr = np.zeros((nn,pow2j))
 
         #Vertical
-        for m in xrange(pow2j):
+        for m in range(pow2j):
             w = DetailMeyerProj(drc[:,m],r,nn,deg)  #j to r
             dr[:,m] = np.real(np.fft.ifft(w))
 
         #Horizontal
-        for m in xrange(nn):
+        for m in range(nn):
             w  = CoarseMeyerProj(dr[m,:],j,mm,deg)  #nn to mm
             ymat[m,:] = ymat[m,:] + np.real(np.fft.ifft(w))
 
         #Quadrant 3. Vertical.
         drc = np.flipud(x[pow2r:2*pow2r,0:pow2j])     #pow2j to pow2r
-        for m in xrange(pow2j):
+        for m in range(pow2j):
             w = CoarseMeyerProj(drc[:,m],r,nn,deg)  #j to r
             dr[:,m] = np.real(np.fft.ifft(w))
 
         #Horizontal
-        for m in xrange(nn):
+        for m in range(nn):
             w = DetailMeyerProj(dr[m,:],j,mm,deg)  #nn to mm
             ymat[m,:] = ymat[m,:] + np.real(np.fft.ifft(w))
 
@@ -995,12 +995,12 @@ def iwt2_meyer(x,L,deg):
         drc = np.flipud(x[pow2r:2*pow2r,pow2j:2*pow2j])  #pow2j to pow2r
 
         #Vertical
-        for m in xrange(pow2j):
+        for m in range(pow2j):
             w = DetailMeyerProj(drc[:,m],r,nn,deg) #j to r
             dr[:,m] = np.real(np.fft.ifft(w))
 
         #Horizontal
-        for m in xrange(nn):
+        for m in range(nn):
             w = DetailMeyerProj(dr[m,:],j,mm,deg)   #nn to mm
             ymat[m,:] = ymat[m,:] + np.real(np.fft.ifft(w))
 
@@ -1013,24 +1013,24 @@ def iwt2_meyer(x,L,deg):
     drc = np.flipud(x[0:pow2r,pow2j:2*pow2j])
     dr = np.zeros((nn,pow2j))
     #Vertical
-    for m in xrange(pow2j):
+    for m in range(pow2j):
         w = FineMeyerProj(drc[:,m],K-1,nn,deg)   #J to K
         dr[:,m] = np.real(np.fft.ifft(w))
 
     #Horizontal
-    for m in xrange(nn):
+    for m in range(nn):
         w = CoarseMeyerProj(dr[m,:],J-1,mm,deg)  #nn to mm
         ymat[m,:] = ymat[m,:] + np.real(np.fft.ifft(w))
 
     #Quadrant 3.Vertical.
     drc = np.flipud(x[pow2r:2*pow2r,0:pow2j])
     #Vertical
-    for m in xrange(pow2j):
+    for m in range(pow2j):
         w = CoarseMeyerProj(drc[:,m],K-1,nn,deg)  #J to K
         dr[:,m] = np.real(np.fft.ifft(w))
 
     #Horizontal
-    for m in xrange(nn):
+    for m in range(nn):
         w = FineMeyerProj(dr[m,:],J-1,mm,deg)    #nn to mm
         ymat[m,:] = ymat[m,:] + np.real(np.fft.ifft(w))
 
@@ -1038,12 +1038,12 @@ def iwt2_meyer(x,L,deg):
     drc = np.flipud(x[pow2r:2*pow2r,pow2j:2*pow2j])
 
     #Vertical
-    for m in xrange(pow2j):
+    for m in range(pow2j):
         w = FineMeyerProj(drc[:,m],K-1,nn,deg)  #J to K
         dr[:,m] = np.real(np.fft.ifft(w))
 
     #Horizontal
-    for m in xrange(nn):
+    for m in range(nn):
         w = FineMeyerProj(dr[m,:],J-1,mm,deg) #nn to mm
         ymat[m,:] = ymat[m,:] + np.real(np.fft.ifft(w))
 
@@ -1108,7 +1108,7 @@ def impulse_resp(dims,fname):
     f = h5py.File(fname,'w')    #Open HDF file for writing
 
 
-    for k in xrange(3,J-1):
+    for k in range(3,J-1):
         logger.info('Processing scale: %d'%(k))
         p2k = 2**k
         p2r = p2k*p2dr
@@ -1125,14 +1125,14 @@ def impulse_resp(dims,fname):
         xdt = np.zeros((p2k,numw))
 
         
-        for p in xrange(numl):
+        for p in range(numl):
             y = np.zeros(nn)
             y[(nn/2)+p] = 1.0
             fy = np.fft.fft(y[::-1])
             yt[:,p] = CoarseMeyerCoeff(fy,k+dR,nn,3)
             ydt[:,p] = DetailMeyerCoeff(fy,k+dR,nn,3)
             
-        for q in xrange(numw):
+        for q in range(numw):
             x = np.zeros(mm)
             x[(mm/2)+q] = 1.0
             fx = np.fft.fft(x)
@@ -1167,14 +1167,14 @@ def impulse_resp(dims,fname):
     xt = np.zeros((p2k,numw))
     xdt = np.zeros((p2k,numw))
     
-    for p in xrange(numl):
+    for p in range(numl):
         y = np.zeros(nn)
         y[(nn/2)+p] = 1.0
         fy = np.fft.fft(y[::-1])
         yt[:,p] = CoarseMeyerCoeff(fy,k+dR,nn,3)
         ydt[:,p] = FineMeyerCoeff(fy,nn,3)
         
-    for q in xrange(numw):
+    for q in range(numw):
         x = np.zeros(mm)
         x[(mm/2)+q] = 1.0
         fx = np.fft.fft(x)
@@ -1228,8 +1228,8 @@ def CoeffWeight(b,rname):
         [yy3,xx3] = get_corners((nn,mm),m,2)
         [yy4,xx4] = get_corners((nn,mm),m,4)
 
-        for p in xrange(Numi):
-            for q in xrange(Numj):
+        for p in range(Numi):
+            for q in range(Numj):
                 btemp=b[p::Numi,q::Numj]
 
                 ind = p*Numj+q

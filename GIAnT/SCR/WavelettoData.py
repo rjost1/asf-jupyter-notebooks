@@ -59,8 +59,8 @@ class thread_invert(mp.Process):
         for ind in self.slice:
             coeff = self.igram[ind,:,:]
 
-            for scl in xrange(self.minscale):
-                for quad in xrange(2,5):
+            for scl in range(self.minscale):
+                for quad in range(2,5):
                     ii,jj = ts.meyer.get_corners((self.Ny,self.Nx),self.Nscale-scl,quad)
                     coeff[ii[0]:ii[1],jj[0]:jj[1]] = 0.0
 
@@ -184,7 +184,7 @@ if __name__ == '__main__':
     nproc = inps.nproc
     progb = ts.ProgressBar(maxValue=nm)
 
-    for grpnum in xrange(len(ngrps)-1):
+    for grpnum in range(len(ngrps)-1):
         pars.start = ngrps[grpnum]
         ninds = ngrps[grpnum+1] - ngrps[grpnum]
         pars.igram[0:ninds,:,:] = wvlt[ngrps[grpnum]:ngrps[grpnum+1],:,:]
@@ -193,7 +193,7 @@ if __name__ == '__main__':
         nlines = np.linspace(0,ninds,num=nproc+1).astype(np.int)
 
         threads = []
-        for k in xrange(nproc):
+        for k in range(nproc):
             pars.slice = np.arange(nlines[k],nlines[k+1])
             threads.append(thread_invert(pars))
             threads[k].start()
@@ -201,7 +201,7 @@ if __name__ == '__main__':
         for thrd in threads:
             thrd.join()
 
-        for k in xrange(ninds):
+        for k in range(ninds):
             imodel[ngrps[grpnum]+k,:,:] = commonarr[k,crop[0]:crop[0]+crop[2],crop[1]:crop[1]+crop[3]]
 
         progb.update(ngrps[grpnum+1])
@@ -213,7 +213,7 @@ if __name__ == '__main__':
 
     rstack = ts.STACK(its)
     progb = ts.ProgressBar(maxValue=crop[2])
-    for k in xrange(crop[2]):
+    for k in range(crop[2]):
          coeff = imodel[:,k,:]
          iwt = np.dot(H,coeff)
          its[:,k,:] = iwt

@@ -11,7 +11,7 @@ def config2obj(cin):
     if isinstance(cin, configobj.ConfigObj) or isinstance(cin, configobj.Section):
         out = Container()
 
-        kk = cin.keys()
+        kk = list(cin.keys())
         for keyin in kk:
             setattr(out, keyin, config2obj(cin[keyin]))
         

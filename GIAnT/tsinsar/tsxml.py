@@ -20,12 +20,12 @@ lxml.objectify to read the files.
 '''    
     
 import numpy as np
-import tsio
-import doris
+from . import tsio
+from . import doris
 import json
 from lxml import etree as ET
 from lxml import objectify as OB
-import logmgr
+from . import logmgr
 import datetime
 
 logger = logmgr.logger('giant')
@@ -64,11 +64,11 @@ def objectify(parent, inp):
                     val = json.loads(obj.value.text) 
                 elif dtype == 'INTLIST':
                     val = json.loads(obj.value.text)
-                    for kk in xrange(length(val)):
+                    for kk in range(length(val)):
                         val[kk] = np.int(np.float(val[kk]))
                 elif dtype == 'FLOATLIST':
                     val = json.loads(obj.value.text)
-                    for kk in xrange(length(val)):
+                    for kk in range(length(val)):
                         val[kk] = np.float(val[kk])
                 else:
                     val = obj.value.text
@@ -76,9 +76,9 @@ def objectify(parent, inp):
                 val = None
             return val
         else:
-            raise AttributeError, "Undefined value attribute."
+            raise AttributeError("Undefined value attribute.")
 
-    keys = inp.__dict__.keys()
+    keys = list(inp.__dict__.keys())
     if 'value' in keys:
         h = get(inp)
 
@@ -877,7 +877,7 @@ class TSXML:
         #########Root node
         master = self.root
         
-        flds = kwargs.keys()
+        flds = list(kwargs.keys())
         
         #########Adding each node
         for fld in flds:

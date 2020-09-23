@@ -96,7 +96,7 @@ class gslice:
         else:
             self.maxscale = maxscale
 
-        for kk in xrange(self.maxscale,self.minscale-1,-1):
+        for kk in range(self.maxscale,self.minscale-1,-1):
             Fs = np.int(2**kk)
             B = Gsmooth(self.data, Fs, Fs/2, thresh=thresh)
             B = B - ss.nanmean(B.flatten())
@@ -106,7 +106,7 @@ class gslice:
 #        self.slist.append(B0)
 
         prev = self.slist[0]
-        for kk in xrange(1,len(self.slist)):
+        for kk in range(1,len(self.slist)):
             now = self.slist[kk]-prev
             prev = self.slist[kk].copy()
             self.slist[kk] = now
@@ -151,7 +151,7 @@ class gslice:
 
         Tsample = []
         Asample = []
-        for kk in xrange(nscale):
+        for kk in range(nscale):
             A = self.slist[kk]
             T = Tobj.slist[kk]
 
@@ -236,7 +236,7 @@ def netinvert(mlist, G):
     Kobs = []
     bobs = []
 
-    for kk in xrange(Nifg):
+    for kk in range(Nifg):
         Kobs.append(mlist[kk].K)
         bobs.append(mlist[kk].B)
 

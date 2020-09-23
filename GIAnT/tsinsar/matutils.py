@@ -105,7 +105,7 @@ def MatrixRoot(Z):
         T = np.real(mysqrtm(Z))
 
     if np.amax(np.abs(np.dot(T.T,T) -Z)) > 1.0e-8:
-        print 'Warning: approximated square root is inexact'
+        print('Warning: approximated square root is inexact')
     return T
 
 def mysqrtm(A):

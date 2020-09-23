@@ -72,8 +72,8 @@ class xval_invert(mp.Process):
     def run(self):
         '''Execute the thread.'''
         mm = self.coeff.shape[2]
-        for ii in xrange(self.istart, self.istart+self.procN,self.skip):
-            for jj in xrange(0,mm,self.skip):
+        for ii in range(self.istart, self.istart+self.procN,self.skip):
+            for jj in range(0,mm,self.skip):
                 d = self.coeff[:,ii,jj]
                 W = self.cwts[:,ii,jj]
                 Zsq = ts.dmultl(W,self.C)
@@ -111,8 +111,8 @@ class wgt_invert(mp.Process):
     def run(self):
         '''Perform the inversion.'''
         mm = self.coeff.shape[2]
-        for ii in xrange(self.istart, self.istart+self.procN):
-            for jj in xrange(0,mm):
+        for ii in range(self.istart, self.istart+self.procN):
+            for jj in range(0,mm):
                 d = self.coeff[:,ii,jj]
                 W = self.cwts[:,ii,jj]
                 alpha = self.alpha[ii,jj]
@@ -203,7 +203,7 @@ if __name__ == '__main__':
     L = []
     if (nReg !=0) & (regu):
         logging.info('Setting up regularization vector')
-        for k in xrange(nReg):
+        for k in range(nReg):
             [ind] = np.where(regF==(k+1))
             num = len(ind)
             Lf = ts.laplace1d(num)
@@ -276,13 +276,13 @@ if __name__ == '__main__':
     if len(L)==0:   #####Case with nothing to regularize
 
         #### Scale by Scale, Quadrant by Quadrant
-        for scl in xrange(minlevel+max(maxscale-1,0),Nanalysis):
+        for scl in range(minlevel+max(maxscale-1,0),Nanalysis):
             if scl == minlevel:
                 minq = 1
             else:
                 minq = 2
             
-            for quad in xrange(minq,5):
+            for quad in range(minq,5):
                 ii,jj = ts.meyer.get_corners((Ny,Nx),scl,quad)
                 
                 data = wvlt[:,ii[0]:ii[1],jj[0]:jj[1]]
@@ -296,8 +296,8 @@ if __name__ == '__main__':
                 logger.info('Inverting: Scale - %2d , Quad - %1d'%(scl,quad))
                 progb = ts.ProgressBar(maxValue=nn)
                 
-                for n in xrange(nn):
-                    for m in xrange(mm):
+                for n in range(nn):
+                    for m in range(mm):
                         W = wgt[:,n,m]
                         d = data[:,n,m]
                         Gw = ts.dmultl(W,CihG)
@@ -342,7 +342,7 @@ if __name__ == '__main__':
         pars.nm  = nm
 
         #####Scale by scale, quadrant by quadrant
-        for scl in xrange(minlevel+max(maxscale-1,0),Nanalysis):
+        for scl in range(minlevel+max(maxscale-1,0),Nanalysis):
             if scl==minlevel:
                 minq = 1
             else:
@@ -366,7 +366,7 @@ if __name__ == '__main__':
             soarr = mp.Array('d',nn*mm*Nifg)
             pars.cwts = np.reshape(np.frombuffer(soarr.get_obj()), (Nifg,nn,mm))
 
-            for quad in xrange(minq,5):
+            for quad in range(minq,5):
                 ss = time.time()
                 ii,jj = ts.meyer.get_corners((Ny,Nx),scl,quad)
                 pars.coeff[:,:,:] = wvlt[:,ii[0]:ii[1],jj[0]:jj[1]]
@@ -381,7 +381,7 @@ if __name__ == '__main__':
                 progb = ts.ProgressBar(maxValue=nn)
                
                 threads = []
-                for pid in xrange(n_proc):
+                for pid in range(n_proc):
                     pars.istart = nlines[pid]
                     pars.procN = nlines[pid+1] - nlines[pid]
                     
@@ -412,7 +412,7 @@ if __name__ == '__main__':
                 logger.info('Inversion: Scale - %2d, Quad - %1d'%(scl,quad))
                 progb = ts.ProgressBar(maxValue=nn)
                 threads = []
-                for pid in xrange(n_proc):
+                for pid in range(n_proc):
                     pars.istart = nlines[pid]
                     pars.procN = nlines[pid+1] - nlines[pid]
 

@@ -10,8 +10,8 @@
 
 import numpy as np
 import datetime as dt
-import matutils as mu
-import logmgr
+from . import matutils as mu
+from . import logmgr
 import sys
 try:
     from scipy import factorial
@@ -58,7 +58,7 @@ def ConnectMatrix(dates,sensor):
     uscenes = uscenes[ind,:]
 
     ConnMat = np.zeros((Nifg,Nsar))
-    for k in xrange(Nifg):
+    for k in range(Nifg):
         mind = np.where((uscenes[:,0] == dates[k,0]) & (uscenes[:,1] == sensor[k]))
         sind = np.where((uscenes[:,0] == dates[k,1]) & (uscenes[:,1] == sensor[k]))
         ConnMat[k,mind[0]] = 1.0
@@ -98,13 +98,13 @@ def ConnectMatrixUAVSAR(dates,sensor):
     Uts = datenum([k[0:6] for k in uscenes[:,0]])
     hrs = np.array([np.int(k[-2:]) for k in uscenes[:,0]])
    
-    print hrs 
+    print(hrs) 
     ind = np.lexsort((uscenes[:,1],Uts))                    #Increasing order of time
     uscenes = uscenes[ind,:]
     hrs = hrs[ind]
 
     ConnMat = np.zeros((Nifg,Nsar))
-    for k in xrange(Nifg):
+    for k in range(Nifg):
         mind = np.where((uscenes[:,0] == dates[k,0]) & (uscenes[:,1] == sensor[k]))
         sind = np.where((uscenes[:,0] == dates[k,1]) & (uscenes[:,1] == sensor[k]))
         ConnMat[k,mind[0]] = 1.0 
@@ -129,7 +129,7 @@ def conntoPairmat(Jmat):
     
     Nifg = Jmat.shape[0]
     Pmat = np.zeros((Nifg,2))
-    for k in xrange(Nifg):
+    for k in range(Nifg):
         ind = np.flatnonzero(Jmat[k,:])
         Pmat[k,:] = ind
     
@@ -153,7 +153,7 @@ def conntoAdjmat(Jmat):
     Amat = np.zeros((Nsar,Nsar))
     Aind = np.zeros((Nsar,Nsar))
 
-    for k in xrange(Nifg):
+    for k in range(Nifg):
         mind = np.flatnonzero(Jmat[k,:]==1)
         sind = np.flatnonzero(Jmat[k,:]==-1)
         Amat[mind,sind]=1
@@ -179,7 +179,7 @@ def adjmattoAdjlist(Amat):
     Nsar = Amat.shape[0]
     alist = []
 
-    for k in xrange(Nsar):
+    for k in range(Nsar):
         comb = np.flatnonzero(Amat[k,:])
         alist.append(comb)
 
@@ -207,7 +207,7 @@ def simpleCycle(Jmat):
     alist = adjmattoAdjlist(Amat)
 
     cycs = []
-    for k in xrange(Nifg):
+    for k in range(Nifg):
         mast = np.flatnonzero(Jmat[k,:] == 1)
         slav = np.flatnonzero(Jmat[k,:] == -1)
         
@@ -262,7 +262,7 @@ def Jmattofolds(Jmat, kfolds, type='ifg'):
             if trnbreak[-1] != (Nifg-1):
                 trnbreak = np.append(trnbreak,Nifg-1)
 
-        for ii in xrange(kfolds):
+        for ii in range(kfolds):
             itrain = pos[trnbreak[ii]:trnbreak[ii+1]]
 
             if type=='sar':
@@ -273,7 +273,7 @@ def Jmattofolds(Jmat, kfolds, type='ifg'):
             trainlist.append(itrain)
             testlist.append(itest)
 
-        for ii in xrange(kfolds):
+        for ii in range(kfolds):
             flag = flag & (len(trainlist[ii]) > 2)
 
         flag = not flag
@@ -300,12 +300,12 @@ def bspline_nu(n,tk,t):
     B = np.zeros((len(tk),len(t)))
     assert (n+1) < len(tk), 'Not enough knots for order %d bspline'%(n)
 
-    for m in xrange(len(tk)-1):
+    for m in range(len(tk)-1):
         ind = where((t>=tk[m]) & (t<tk[m+1]))
         B[m,ind] = 1.0
 
-    for p in xrange(n):
-        for q in xrange(len(tk)-2-p):
+    for p in range(n):
+        for q in range(len(tk)-2-p):
             B[q,:] = ((t-tk[q])/(tk[p+q+1]-tk[q]))*B[q,:] + ((tk[p+q+2]-t)/(tk[p+q+2]-tk[q+1]))*B[q+1,:]
 
     ihalf = np.int_((n+1)/2)
@@ -365,7 +365,7 @@ def Timefn(rep,t):
     rflag = []      #Regularization flag
     vname = []      #Parameter name
     regstart = 1    #Set of params that need to be regularized together
-    for k in xrange(Nrep):
+    for k in range(Nrep):
         fn = rep[k]	
         fname = fn[0].upper()
         if fname in ('LINEAR'):  #f = (t-t1)
@@ -374,7 +374,7 @@ def Timefn(rep,t):
 
             ts = fn[1]
 
-            for m in xrange(len(ts)):
+            for m in range(len(ts)):
                 logger.info('Adding Line at T = %f'%(ts[m]))
                 hfn = (t-ts[m])
                 vn = 'LINE/%2.3f'%(ts[m])
@@ -404,9 +404,9 @@ def Timefn(rep,t):
             ts = fn[2]
             
             assert len(order) == len(ts), 'POLY: Orders and times dont match'
-            for p in xrange(len(order)):
+            for p in range(len(order)):
                 g = (t-ts[p])
-                for m in xrange(order[p]+1):
+                for m in range(order[p]+1):
                     logger.info('Adding order %d at T = %f'%(m,ts[p]))
                     hfn = g**m
                     vn = 'P/%d/%2.1f'%(m,ts[p])
@@ -421,7 +421,7 @@ def Timefn(rep,t):
             assert num==1, 'Undefined QUADRATIC sequence'
             
             ts = fn[1]
-            for m in xrange(len(ts)):
+            for m in range(len(ts)):
                 logger.info('Adding quad at T = %f'%(ts[m]))
                 hfn = (t-ts[m])**2
                 vn = 'QUAD/%2.3f'%(ts[m])
@@ -433,8 +433,8 @@ def Timefn(rep,t):
         elif fname in ('OFFSET'): # constant offset
             num = len(fn) - 1
             if (num != 1):
-                print 'Undefined sequence: ', fn
-                print 'Eg: [[\'OFFSET\'],[t_dummy]]'
+                print('Undefined sequence: ', fn)
+                print('Eg: [[\'OFFSET\'],[t_dummy]]')
                 sys.exit(1)
             ts = fn[1]
             H.append(np.ones(t.shape, dtype=float))
@@ -449,7 +449,7 @@ def Timefn(rep,t):
             taus = fn[2]
             assert len(ts) == len(taus), 'EXP: Times and Taus dont match'
 
-            for m in xrange(len(ts)):
+            for m in range(len(ts)):
                 logger.info('Adding Exp at T = %f, Tau = %f'%(ts[m],taus[m]))
                 hfn = (1 - np.exp(-(t-ts[m])/taus[m]))*(t>=ts[m])
                 vn = 'EXP/%2.3f/%2.3f'%(ts[m],taus[m])
@@ -467,7 +467,7 @@ def Timefn(rep,t):
 
             assert len(ts) == len(taus), 'LOG: Times and Taus dont match'
 
-            for m in xrange(len(ts)):
+            for m in range(len(ts)):
                 logger.info('Adding Log at T= %f, Tau = %f'%(ts[m],taus[m]))
                 hfn = np.log(1.0+ ((t-ts[m])/taus[m])*(t>=ts[m]))
                 vn = 'LOG/%2.3f/%2.3f'%(ts[m],taus[m])
@@ -482,7 +482,7 @@ def Timefn(rep,t):
 
             ts = fn[1]
 
-            for m in xrange(len(ts)):
+            for m in range(len(ts)):
                 logger.info('Adding Step at T = %f'%(ts[m]))
                 hfn = 1.0*(t>=ts[m])
                 vn = 'STEP/%2.3f'%(ts[m])
@@ -497,7 +497,7 @@ def Timefn(rep,t):
 
             taus = fn[1]
 
-            for m in xrange(len(taus)):
+            for m in range(len(taus)):
                 logger.info('Adding cos with Tau = %f'%(taus[m]))
                 logger.info('Adding sin with Tau = %f'%(taus[m]))
                 #hfn = 1-np.cos(2*np.pi*t/taus[m])
@@ -524,11 +524,11 @@ def Timefn(rep,t):
 
             assert len(orders) == len(nums), 'BSPLINE: Orders and Numbers dont match. '
 
-            for m in xrange(len(orders)):
+            for m in range(len(orders)):
                 logger.info('Adding %d bsplines of order %d'%(nums[m],orders[m]))
                 ts = np.linspace(t.min(),t.max(),nums[m])
                 dtk = ts[2] - ts[1]
-                for p in xrange(len(ts)):
+                for p in range(len(ts)):
                     hfn = bspline(orders[m],dtk,t-ts[p])
                     vn = 'Bsp/%d/%d'%(p,orders[m])
                     rf = regstart
@@ -548,11 +548,11 @@ def Timefn(rep,t):
 
             assert len(orders) == len(nums), 'Orders and Numbers dont match.'
 
-            for m in xrange(len(orders)):
+            for m in range(len(orders)):
                 logger.info('Adding %d isplines of order %d'%(nums[m],orders[m]))
                 ts = np.linspace(t.min(),t.max(),nums[m])
                 dtk = ts[2] - ts[1]
-                for p in xrange(len(ts)):
+                for p in range(len(ts)):
                     hfn = ispline(orders[m],dtk,t-ts[p])
                     vn = 'Isp/{}/{}/{:5.3f}'.format(p,orders[m],dtk)
                     rf = regstart
@@ -570,7 +570,7 @@ def Timefn(rep,t):
             num = len(t)
             logger.info('Adding %d linear pieces (SBAS)'%(num))
 
-            for m in xrange(num):
+            for m in range(num):
                 hfn = np.zeros(num)
                 if m < master:
                     hfn[0:m+1] = -1
@@ -767,7 +767,7 @@ def grad1d(N):
         * gop  ->  Gradient operator matrix for a vector of length'''
     
     gop = np.zeros((N-1,N),dtype=np.float64)
-    for k in xrange(0,N-1):
+    for k in range(0,N-1):
         gop[k,k]=-1.0
         gop[k,k+1] = 1.0
         
@@ -785,7 +785,7 @@ def laplace1d(N):
         * lap   -> Laplacian operator matrix for a vector of length'''
     
     lap = np.zeros((N,N),dtype=np.float64)
-    for k in xrange(1,N-1):
+    for k in range(1,N-1):
         lap[k,k-1]=-1.0
         lap[k,k] = 2.0
         lap[k,k+1]=-1.0
@@ -819,14 +819,14 @@ def timegaussEQfilt(time,rep,tau):
         # Get a list of STEPS
 	EQl = []
 	EQl.append([-1.0])
-	for i in xrange(len(rep)):
+	for i in range(len(rep)):
 	        if rep[i][0] in ('STEP'):
         	        EQl.append(rep[i][1])	
 	EQl.append([time[-1]+1.0])
 	EQl = np.array(EQl)
 
         # Build the filter
-	for i in xrange(EQl.size-1):
+	for i in range(EQl.size-1):
 	        ind = np.flatnonzero( (time>EQl[i].__getitem__(0)) & (time<EQl[i+1].__getitem__(0)) )
 	        t = time[ind]
 	        gauss[ind[0]:ind[-1]+1,ind[0]:ind[-1]+1] = (t[None,:] - t[:,None])**2
@@ -840,7 +840,7 @@ def timegaussEQfilt(time,rep,tau):
 def datestr(num):
     '''Converts ordinal date array to list of yyyymmdd strings.'''
     daylist = []
-    for k in xrange(len(num)):
+    for k in range(len(num)):
         dobj = dt.date.fromordinal(np.int(num[k]))
         strobj = '%4d%02d%02d'%(dobj.year,dobj.month,dobj.day)
         daylist.append(strobj)
@@ -851,7 +851,7 @@ def datenum(datelist):
      array.'''
   
     Uts = np.zeros(len(datelist))
-    for k in xrange(len(datelist)):
+    for k in range(len(datelist)):
         dint = np.int(datelist[k])
         if dint < 1e7:
             dint = dint+2e7

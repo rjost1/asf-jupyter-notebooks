@@ -92,14 +92,14 @@ if __name__ == '__main__':
         res = np.zeros((flen,fwid))
 
         if inps.model:
-            for k in xrange(flen):
+            for k in range(flen):
                 gd = data[:,k,:]
                 res[k,:] = np.dot(Hmat[ind,:],gd)
         else:
             win = np.exp(-0.5*(tims-tinp)**2 / (inps.gwin*inps.gwin))
             win = win/(win.sum())
     
-            for k in xrange(flen):
+            for k in range(flen):
                 gd = data[:,k,:]
                 res[k,:] = np.dot(win,gd)
     
@@ -135,11 +135,11 @@ if __name__ == '__main__':
     pc.subplots_adjust(left=0.25,bottom=0.1,right=0.4,top=0.9)
     pc.savefig('%s/cbr.png'%(inps.diri))
 
-    print 'Building KML'
+    print('Building KML')
     progb = ts.ProgressBar(maxValue=inps.nslice)
     #######Building the KML file
     doc = KML.kml(KML.Folder(KML.name('Slider Example')))
-    for k in xrange(inps.nslice):
+    for k in range(inps.nslice):
         yr = np.int(np.floor(tarry[k]))
         frac = np.int(np.round((tarry[k] -yr)*365.25))
         dstr = dt.datetime(yr,1,1) + dt.timedelta(frac-1)

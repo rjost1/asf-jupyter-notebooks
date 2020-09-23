@@ -101,7 +101,7 @@ if __name__ == '__main__':
 
     odata = data[:,pixind[0]-neigh:pixind[0]+neigh+1,pixind[1]-neigh:pixind[1]+neigh+1]/10.0
     prets = np.zeros(odata.shape[0])
-    for k in xrange(odata.shape[0]):
+    for k in range(odata.shape[0]):
         prets[k] = ts.nanmean(odata[k,:,:])
 
     if inps.model:
@@ -118,14 +118,14 @@ if __name__ == '__main__':
 
         #####Replace this part as needed 
         if inps.model:
-            for k in xrange(flen):
+            for k in range(flen):
                 gd = data[:,k,:]
                 res[k,:] = np.dot(Hmat[ind,:],gd)
         else:
             win = np.exp(-0.5*(tims-tinp)**2 / (inps.gwin*inps.gwin))
             win = win/(win.sum())
     
-            for k in xrange(flen):
+            for k in range(flen):
                 gd = data[:,k,:]
                 res[k,:] = np.dot(win,gd)
 

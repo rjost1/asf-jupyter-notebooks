@@ -92,7 +92,7 @@ class NSBAS_invert(mp.Process):
         weight = self.par.weight
         par = self.par      ###Not copying. Faster access.
 
-        for q in xrange(npix):
+        for q in range(npix):
             ii = par.pixinds[q]
             dph = par.data[:,q]
             inds = np.flatnonzero(np.isfinite(dph) & (dph!=0))
@@ -127,7 +127,7 @@ class NSBAS_invert(mp.Process):
 
                     # Do Jacknife test for uncertainties
                     Vsets = np.zeros((len(indz), npd))
-                    for r in xrange(len(indz)):
+                    for r in range(len(indz)):
 
                         inds3 = np.delete(np.arange(len(inds)),np.flatnonzero(Dt2[:,r]))
                         Dt3   = Dt2[inds3,:]
@@ -361,13 +361,13 @@ if __name__ == '__main__':
     pinds = np.int_(np.linspace(0,Nx,num=nproc+1))
     progb = ts.ProgressBar(maxValue=Ny)
 
-    for p in xrange(Ny):        #For every line
+    for p in range(Ny):        #For every line
         threads = []
         par.parms[:,:] = np.nan
         par.parmerr[:,:] = np.nan
         par.ifgcnt[:] = 0
 
-        for q in xrange(nproc):
+        for q in range(nproc):
             inds = np.arange(pinds[q],pinds[q+1])
             par.pixinds = inds
             par.data   = igram[:,p,inds]

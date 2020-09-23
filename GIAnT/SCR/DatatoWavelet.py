@@ -196,7 +196,7 @@ if __name__ == '__main__':
     #######Break stack into groups that fit in memory
     nproc = inps.nproc
     progb = ts.ProgressBar(maxValue=Nifg)
-    for grpnum in xrange(len(ngrps)-1):
+    for grpnum in range(len(ngrps)-1):
         pars.start = ngrps[grpnum]
         ninds = ngrps[grpnum+1] - ngrps[grpnum]      #Number of IFGs
         pars.igram[0:ninds,:,:] = igram[ngrps[grpnum]:ngrps[grpnum+1],:,:]        #From H5 file
@@ -206,7 +206,7 @@ if __name__ == '__main__':
         threads = []
 
         ######Break a group into threads
-        for k in xrange(nproc):
+        for k in range(nproc):
             pars.slice = np.arange(nlines[k],nlines[k+1])
             threads.append(thread_invert(pars))
             threads[k].start()

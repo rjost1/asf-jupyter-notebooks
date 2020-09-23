@@ -107,7 +107,7 @@ if __name__ == '__main__':
     logger.info('Computing the stack if more than %d int valid'%nvalid)
 
     progb = ts.ProgressBar(maxValue=Ny)
-    for k in xrange(Ny):
+    for k in range(Ny):
         data = igram[:,k,:]
         XX = np.isfinite(data)
         Num = XX.sum(axis=0)

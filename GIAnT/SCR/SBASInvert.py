@@ -214,7 +214,7 @@ if __name__ == '__main__':
 
     ####Actual SBAS processing
     progb = ts.ProgressBar(minValue=0,maxValue=Ny)
-    for p in xrange(Ny):
+    for p in range(Ny):
         dph = igram[:,p,:]
         phat,dhat,rhat = mysbas.invert(dph)
         parms[p,:,:] = phat.T

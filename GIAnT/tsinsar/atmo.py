@@ -18,7 +18,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import logmgr
+from . import logmgr
 import tsinsar as ts
 import scipy.interpolate as si
 try:
@@ -134,7 +134,7 @@ class EstimateK:
 		est = ts.atmo.EstimateK(Pol=self.Pol,Orb=self.Orb)
 
 		toto = ts.ProgressBar(maxValue=len(vx))
-		for i in xrange(len(vx)):
+		for i in range(len(vx)):
 			le = np.max((0,vx[i]-wl))
 			ri = np.min((w,vx[i]+wl))
 			up = np.max((0,vy[i]-wl))
@@ -147,14 +147,14 @@ class EstimateK:
 		self.Kmapi = Kmapi
 		if lkdown>1:
 			Kmap = np.zeros((lo,wo,self.Pol))
-			x = np.array(xrange(w))
-			y = np.array(xrange(l))
+			x = np.array(range(w))
+			y = np.array(range(l))
 			xout = np.linspace(0,w,wo)
 			yout = np.linspace(0,l,lo)
-			for i in xrange(self.Pol):
+			for i in range(self.Pol):
 				bili = pa.processor.Bilinear2DInterpolator(x,y,np.squeeze(Kmapi[:,:,i]),cube=False)
 				toto = ts.ProgressBar(maxValue=len(xout))
-				for n in xrange(len(xout)):
+				for n in range(len(xout)):
 					xi = np.ones((yout.shape))*xout[n]
 					Kmap[:,n,i] = bili(xi,yout)
 					toto.update(n,every=5)

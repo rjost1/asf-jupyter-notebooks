@@ -61,21 +61,21 @@ if __name__ == '__main__':
     ####Raw Time-series
     raw = None
     if inps.pltraw:
-        if 'rawts' in hfile.keys():
+        if 'rawts' in list(hfile.keys()):
             raw = hfile['rawts']
         else:
             logger.info('Input h5 file does not contain raw time-series. Continuing ....')
             inps.pltraw = False
 
     #####Common mask
-    if 'cmask' in hfile.keys():
+    if 'cmask' in list(hfile.keys()):
         cmask = hfile['cmask'].value
     else:
         cmask = np.ones((flen,fwid))
 
     err = None
     if inps.plot_err: 
-        if 'error' in hfile.keys():
+        if 'error' in list(hfile.keys()):
             err = hfile['error']
         else:
             logger.info('Input h5file does not contain error estimates. Continuing ....')
@@ -98,20 +98,20 @@ if __name__ == '__main__':
     ######Reading in the model parameters
     parms = None
     if inps.pltmodel:
-        if 'ModelMat' in hfile.keys():
+        if 'ModelMat' in list(hfile.keys()):
             Hmat = hfile['ModelMat'].value
             npar = Hmat.shape[1]
             names = list(str(np.arange(npar)))
             parms = hfile['parms']
             modaxis = 2
 
-        elif 'modelstr' in hfile.keys():
+        elif 'modelstr' in list(hfile.keys()):
             modstr = json.loads(hfile['modelstr'].value)
             Hmat,names,regf = ts.Timefn(modstr,tims-tims[0])
             npar = Hmat.shape[1]
             parms = hfile['model']
             modaxis=0
-        elif 'mName' in hfile.keys():
+        elif 'mName' in list(hfile.keys()):
             Name = hfile['mName'].value
             rep = ts.mName2Rep(Name)
             Hmat, names, regF = ts.Timefn(rep,tims-tims[0])
