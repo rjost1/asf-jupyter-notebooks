@@ -10,6 +10,12 @@ HDF5 file.
     a low cthresh value (0.2-0.25) to ensure a reasonable number
      of pixels are selected.'''
 
+## For Binder ##
+import sys
+tsinsar_pth = '/home/jovyan/GIAnT'
+if tsinsar_pth not in sys.path:
+    sys.path.append(tsinsar_pth)
+
 import numpy as np
 import tsinsar as ts
 import sys
