@@ -9,13 +9,6 @@ network deramping.The results are stored in a HDF5 file.
     modifications:
         DB  AUG 2017    try to import pyaps'''
 
-## For Binder ##
-import sys
-tsinsar_pth = '/home/jovyan/GIAnT'
-if tsinsar_pth not in sys.path:
-    sys.path.append(tsinsar_pth)
-###############
-
 import numpy as np
 import tsinsar as ts
 import sys
@@ -161,7 +154,7 @@ if __name__ == '__main__':
         
         phs = np.zeros((flen,fwid))
         progb = ts.ProgressBar(maxValue=len(flist))
-        for k in range(len(flist)):
+        for k in xrange(len(flist)):
             atmobj = pyaps.PyAPS_rdr(flist[k],os.path.join(h5dir,hgtf),grib=atmos,demfmt='HGT')
 
             if latf is not None:
@@ -212,7 +205,7 @@ if __name__ == '__main__':
         logger.info('PNG preview dir: %s'%fadir) 
         progb = ts.ProgressBar(maxValue=Nifg)
 
-        for k in range(Nifg):
+        for k in xrange(Nifg):
             row = Jmat[k,:]
             mast = np.where(row == 1)
             slav = np.where(row == -1)
@@ -346,7 +339,7 @@ if __name__ == '__main__':
         logger.info('PNG preview of Deramped images: %s'%frdir)
         progb = ts.ProgressBar(maxValue=Nifg)
         idict = collections.OrderedDict()
-        for k in range(Nifg):
+        for k in xrange(Nifg):
             imname = '%s/I%03d.png'%(frdir,k+1)
             if atmos is None:
                 ifg = igram[k,:,:]

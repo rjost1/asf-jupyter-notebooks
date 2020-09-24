@@ -57,7 +57,7 @@ class WSBAS:
         self.nm = H.shape[1]
         self.inds = []
 
-        for sind in range(nsar):
+        for sind in xrange(nsar):
             inds = np.delete(np.arange(nifg),np.flatnonzero(J[:,sind]))
             self.inds.append(inds)
            
@@ -65,7 +65,7 @@ class WSBAS:
 
     def invert(self,G,data):
         parms = np.zeros((self.nset,self.nm))
-        for k in range(self.nset):
+        for k in xrange(self.nset):
             [phat,res,n,s] = np.linalg.lstsq(G[self.inds[k],:],data[self.inds[k]],rcond=1.0e-8)
 #            dhat = np.dot(self.Hs,phat[0:self.nm,:])
 #            dhat = dhat - dhat[self.masterind,:]
@@ -111,8 +111,8 @@ class thread_invert(mp.Process):
         
     def run(self):
         mm = self.coeffs.shape[2]
-        for ii in range(self.istart, self.istart+self.procN):
-            for jj in range(mm):
+        for ii in xrange(self.istart, self.istart+self.procN):
+            for jj in xrange(mm):
                 d = self.coeff[:,ii,jj]
                 W = self.cwts[:,ii,jj]
                 Zsq = ts.dmultl(W,self.C)
@@ -197,7 +197,7 @@ if (nReg==0) & (regu):
 L = []
 if (nReg !=0) & (regu):
     logging.info('Setting up regularization vector')
-    for k in range(nReg):
+    for k in xrange(nReg):
         [ind] = np.where(regF==(k+1))
         num = len(ind)
         Lf = ts.laplace1d(num)
@@ -274,13 +274,13 @@ if len(L)==0:   #####Case with nothing to regularize
 
     oper = WSBAS(Jm, H, tims, masterind ,demerr=demerr)
 
-    for scl in range(minlevel+max(maxscale-1,0),Nanalysis):
+    for scl in xrange(minlevel+max(maxscale-1,0),Nanalysis):
         if scl == minlevel:
             minq = 1
         else:
             minq = 2
         
-        for quad in range(minq,5):
+        for quad in xrange(minq,5):
             ii,jj = ts.meyer.get_corners((Ny,Nx),scl,quad)
             
             data = wvlt[:,ii[0]:ii[1],jj[0]:jj[1]]
@@ -293,8 +293,8 @@ if len(L)==0:   #####Case with nothing to regularize
             progb = ts.ProgressBar(maxValue=nn)
            
             parms = np.zeros((Nsar,nm,nn,mm))
-            for n in range(nn):
-                for m in range(mm):
+            for n in xrange(nn):
+                for m in xrange(mm):
                     W = wgt[:,n,m]
                     d = data[:,n,m]
                     Gw = ts.dmultl(W,CihG)
@@ -326,7 +326,7 @@ else:    #####Use regularized inversions
     pars.S = L
     pars.C = Cihalf
 
-    for scl in range(minlevel+max(maxscale-1,0),Nanalysis):
+    for scl in xrange(minlevel+max(maxscale-1,0),Nanalysis):
         if scl==minlevel:
             minq = 1
         else:
@@ -350,7 +350,7 @@ else:    #####Use regularized inversions
         soarr = mp.Array('d',nn*mm*Nifg)
         pars.cwts = np.reshape(np.frombuffer(soarr.get_obj()), (Nifg,nn,mm))
 
-        for quad in range(minq,5):
+        for quad in xrange(minq,5):
             ss = time.time()
             ii,jj = ts.meyer.get_corners((Ny,Nx),scl,quad)
             pars.coeff[:,:,:] = wvlt[:,ii[0]:ii[1],jj[0]:jj[1]]
@@ -365,7 +365,7 @@ else:    #####Use regularized inversions
             progb = ts.ProgressBar(maxValue=nn)
            
             threads = []
-            for pid in range(n_proc):
+            for pid in xrange(n_proc):
                 pars.istart = nlines[pid]
                 pars.procN = nlines[pid+1] - nlines[pid]
                 

@@ -22,7 +22,7 @@ def makefnames(dates1,dates2,sensor):
         cname = '%s/int_%s_%s/STACK/lp_filt_%s-%s-sim_PRC_8rlks_phsig.cor'%(dirname,dates1,dates2,dates1,dates2)
 
     else:
-        print('Unknown sensor. Check inputs.')
+        print 'Unknown sensor. Check inputs.'
         sys.exit(1)
 
     return iname,cname

@@ -98,7 +98,7 @@ class FuncAnimation(TimedAnimation):
             self._iter_gen = lambda: iter(frames)
             self.save_count = len(frames)
         else:
-            self._iter_gen = lambda: iter(list(range(frames)))
+            self._iter_gen = lambda: iter(range(frames))
             self.save_count = frames
 
         if self.save_count is None:
@@ -123,7 +123,7 @@ class FuncAnimation(TimedAnimation):
 
     def _init_draw(self):
         if self._init_func is None:
-            self._draw_frame(next(self.new_frame_seq()))
+            self._draw_frame(self.new_frame_seq().next())
         else:
             self._drawn_artists = self._init_func()
 

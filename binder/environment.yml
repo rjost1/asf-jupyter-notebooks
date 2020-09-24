@@ -1,7 +1,6 @@
 name: notebook
 channels:
   - conda-forge
-  - brian-team
   - defaults
 dependencies:
   - python=3.7
@@ -11,7 +10,6 @@ dependencies:
   - matplotlib
   - gdal
   - scipy
-  - weave
   - pip:
       - awscli
   

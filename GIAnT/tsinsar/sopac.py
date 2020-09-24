@@ -1,7 +1,7 @@
 
 import numpy as np
-from . import tsio
-from . import logmgr
+import tsio
+import logmgr
 
 logger = logmgr.logger('giant',level='DEBUG')
 

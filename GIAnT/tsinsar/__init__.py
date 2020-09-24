@@ -4,35 +4,28 @@
  the time-series InSAR scripts and our libraries. Imports
  all the functions from our libraries into one single module.''' 
 
-## For Binder ##
-import sys
-tsinsar_pth = '/home/jovyan/GIAnT'
-if tsinsar_pth not in sys.path:
-    sys.path.append(tsinsar_pth)
-###############
-
-from .tsutils import *
-from .stackutils import *
-from .tsio import *
-from .tsxml import *
-from .stack import *
-from .plots import *
-from .matutils import *
-from .schutils import *
-from .isotrop_atmos import *
-from . import gps
-from . import meyer 
-from . import mints
-from . import logmgr
-from . import atmo
-from . import tropo
-from . import doris
-from . import matutils
-from . import sopac
-from . import tscobj
-from . import animate
+from tsutils import *
+from stackutils import *
+from tsio import *
+from tsxml import *
+from stack import *
+from plots import *
+from matutils import *
+from schutils import *
+from isotrop_atmos import *
+import gps
+import meyer 
+import mints
+import logmgr
+import atmo
+import tropo
+import doris
+import matutils
+import sopac
+import tscobj
+import animate
 try:
-    from . import wvlt
+    import wvlt
 except ImportError:
     pass
 

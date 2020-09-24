@@ -25,13 +25,7 @@ according to a threshold and creates the igram matrix. The results are
 20121217: Modified for ADORE.
 
 '''
-## For Binder ##
-import sys
-tsinsar_pth = '/home/jovyan/GIAnT'
-if tsinsar_pth not in sys.path:
-    sys.path.append(tsinsar_pth)
-###############
-
+     
 import numpy as np
 import tsinsar as ts
 import sys
@@ -218,7 +212,7 @@ if __name__ == '__main__':
     unwfmt = (pars.data.format.unwfmt)
     corfmt = (pars.data.format.corfmt)
 
-    for k in range(Nifg):
+    for k in xrange(Nifg):
         if ilist is None and clist is None:
         #####File names not provided as input
             iname,cname = user.makefnames(dates[k,0],dates[k,1],sat[k])
@@ -421,7 +415,7 @@ if __name__ == '__main__':
         hout.write('FILE_LENGTH\t\t%d\n'%(nlen))
         dazpix = np.float(hdict['AZIMUTH_PIXEL_SIZE'])*lks
         drgpix = np.float(hdict['RANGE_PIXEL_SIZE'])*lks
-        for k in range(4):
+        for k in xrange(4):
             hout.write('LAT_REF%1d\t\t%s\n'%(k+1,hdict['LAT_REF%d'%(k+1)]))
             hout.write('LON_REF%1d\t\t%s\n'%(k+1,hdict['LON_REF%d'%(k+1)]))
 

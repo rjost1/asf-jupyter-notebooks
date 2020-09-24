@@ -137,7 +137,7 @@ class Object:
             fwrite('Number of correlation windows:          %s' %d.Number_of_correlation_windows)
             fwrite('')
             fwrite('#     center(l,p)   coherence   offsetL   offsetP')
-            for k in range(d.results.shape[0]):
+            for k in xrange(d.results.shape[0]):
                 fwrite('%d      %d      %d      %f      %d      %d' %(d.results[k,0], d.results[k,1], d.results[k,2], d.results[k,3], d.results[k,4], d.results[k,5]))
             fwrite('')
             fwrite(stars)
@@ -280,7 +280,7 @@ def res2dict(resfile):
         cntr=cntr+1;
     
     #loop over process control and read each output
-    for key in list(out['process_control'].keys()):
+    for key in out['process_control'].keys():
         if key=='NOT_USED':
             continue
         out[key]=process2dict(res,key);
@@ -344,7 +344,7 @@ def file2dict(filename):
             line=FH.readline()
         FH.close()
     else:
-        print("Can not open file: ", filename);
+        print "Can not open file: ", filename;
         return {} #an empty dict
     return out
 
@@ -726,7 +726,7 @@ def getval(fileDict, key, lines=None, processName=None, regexp=None):
     #Now check lines or processName
     if (lines is None) and (processName is None):
         lines=[];
-        for k in list(fileDict.keys()):
+        for k in fileDict.keys():
             if fileDict[k].find(key)>-1:
                 lines.append(k)
     if lines is None: #this means processName is given but lines is empty.
@@ -769,7 +769,7 @@ def getdata(fname, width, dataFormat, length=0, byteswap=False):
         length=float(filesize)/width/np.dtype(datatype).itemsize
         if not isint(length):
             print("Error with file width, will continue but results might be bad.")
-            print(('Width(*2 if complex): %d, Length: %.2f, FileSize: %d' % (width,length,filesize) ))
+            print('Width(*2 if complex): %d, Length: %.2f, FileSize: %d' % (width,length,filesize) )
         length=int(length);
 
     if complexFlag:
@@ -792,7 +792,7 @@ def getProcessLines(fileDict, processName):
     Returns -1 if can not find start or end of process.
     """
     lstart=-1;lend=-1
-    for k in list(fileDict.keys()):
+    for k in fileDict.keys():
         if fileDict[str(k)].find('Start_'+processName)>-1:
             lstart=int(k);
         if fileDict[str(k)].find('End_'+processName)>-1:
@@ -806,7 +806,7 @@ def csv2Array(fileDict, lStart, rows, cols, dtype=np.float):
     csv2Array(fileDict, lStart, rows, cols, dtype=np.float):
     '''
     out=np.empty((rows,cols), dtype);
-    for r in range(rows):
+    for r in xrange(rows):
         out[r,:]=np.fromstring(fileDict[str(lStart+r)], dtype, cols, ' ')
     return out
 
@@ -866,7 +866,7 @@ def isresfile(resfile,lines=30):
     '''
     if os.path.isfile(resfile):
         FH=open(resfile, 'r');
-        for l in range(lines):
+        for l in xrange(lines):
             line=FH.readline();
             if 'Start_process_control' in line:
                 return True
@@ -892,7 +892,7 @@ def getProduct(rdict, process=None, filename=None, width=None, dataFormat=None):
     """
     #check if idict or iobj
     if (process is None) & (isinstance(rdict, dict)):
-        print("Please provide either result object or resdict and process name.")
+        print "Please provide either result object or resdict and process name."
         return -1
     if process==None:
         if filename is None:
@@ -908,7 +908,7 @@ def getProduct(rdict, process=None, filename=None, width=None, dataFormat=None):
         if filename is None:
             filename=rdict[process]['Data_output_file']
         if width is None:
-            if 'Number of pixels' in rdict[process]:
+            if rdict[process].has_key('Number of pixels'):
                 width=int(rdict[process]['Number of pixels'])
             else:
                 width=int( (int(rdict[process]['Last_pixel'])-int(rdict[process]['First_pixel'])+1) /rdict.Multilookfactor_range_direction )
@@ -920,10 +920,10 @@ def parseSettings(filename):
     """
     s=parseSettings('settings.set')
     """
-    import configparser
-    class AdoreConfigParser(configparser.RawConfigParser):
+    import ConfigParser
+    class AdoreConfigParser(ConfigParser.RawConfigParser):
         def get(self, section, option):
-            val = configparser.RawConfigParser.get(self, section, option)
+            val = ConfigParser.RawConfigParser.get(self, section, option)
             return val.lstrip('"').rstrip('"')
 
     s=AdoreConfigParser();

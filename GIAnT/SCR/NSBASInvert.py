@@ -90,7 +90,7 @@ class NSBAS_invert(mp.Process):
         Nsar = self.par.Nsar
         par = self.par      ###Not copying. Faster access.
 
-        for q in range(npix):
+        for q in xrange(npix):
             ii = par.pixinds[q]
             dph = par.data[:,q]
             inds = np.flatnonzero(np.isfinite(dph) & (dph!=0))
@@ -338,7 +338,7 @@ if __name__ == '__main__':
     pinds = np.int_(np.linspace(0,Nx,num=nproc+1))
     progb = ts.ProgressBar(maxValue=Ny)
 
-    for p in range(Ny):        #For every line
+    for p in xrange(Ny):        #For every line
         threads = []
         par.raw[:,:] = np.nan
         par.parms[:,:] = np.nan
@@ -353,7 +353,7 @@ if __name__ == '__main__':
             nb.run()
 
         else:
-            for q in range(nproc):
+            for q in xrange(nproc):
                 inds = np.arange(pinds[q],pinds[q+1])
                 par.pixinds = inds
                 par.data   = igram[:,p,inds]

@@ -54,7 +54,7 @@ class TSBAS_invert(mp.Process):
         par = self.par
         Nifg = par.data.shape[0]
 
-        for q in range(npix):
+        for q in xrange(npix):
             ii = par.pixinds[q]
             dph = par.data[:,q]
             numv = np.sum(np.isfinite(dph) & (dph!=0))
@@ -153,7 +153,7 @@ if __name__ == '__main__':
     L = []
     if (nReg !=0) & (regu):
         logging.info('Setting up regularization vector')
-        for k in range(nReg):
+        for k in xrange(nReg):
             [ind] = np.where(regF==(k+1))
             num = len(ind)
             Lf = ts.grad1d(num)
@@ -202,7 +202,7 @@ if __name__ == '__main__':
 
     ######If no regularization is needed
     if len(L)==0:
-            for p in range(Ny):
+            for p in xrange(Ny):
                 dph = np.squeeze(igram[:,p,:])
                 [phat,res,n,s] = np.linalg.lstsq(G,dph,rcond=1.0e-8)
                 dhat = np.dot(H,phat[0:nm,:])
@@ -228,10 +228,10 @@ if __name__ == '__main__':
         par.recons = np.reshape(np.frombuffer(farr.get_obj()),(Nsar,Nx))
 
         
-        for p in range(Ny):
+        for p in xrange(Ny):
             threads = []
 
-            for q in range(nproc):
+            for q in xrange(nproc):
                 inds = np.arange(pinds[q],pinds[q+1])
                 par.pixinds = inds
                 par.data = igram[:,p,inds]

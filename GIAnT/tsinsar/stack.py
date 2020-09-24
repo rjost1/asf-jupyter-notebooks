@@ -10,18 +10,18 @@ stack operations.
     numpy, tsutils, tsio, stackutils, plots, scipy.linalg, 
     scipy.stats, logging'''
 
-from . import stackutils as su
+import stackutils as su
 import scipy.linalg as lm
 import scipy.stats as st
-from . import tsio
-from . import tsutils as tu
+import tsio
+import tsutils as tu
 import numpy as np
-from . import plots
-from . import gps
-from . import logmgr
+import plots
+import gps
+import logmgr
 import solver.iterL1 as itr
 import os
-from . import tropo as trp
+import tropo as trp
 
 logger = logmgr.logger('giant')
 
@@ -122,8 +122,8 @@ class STACK:
             mask = self.mask
 
         progb = tsio.ProgressBar(maxValue=nyy)
-        for ppp in range(nyy):
-            for qqq in range(nxx):
+        for ppp in xrange(nyy):
+            for qqq in xrange(nxx):
                 if np.isfinite(mask[ppp, qqq]):
                     dph = self.data[:, ppp, qqq]
                     phat = np.dot(jmat, dph)
@@ -153,7 +153,7 @@ class STACK:
         mask = self.mask
         logger.info('PROGRESS: Estimating individual ramps.')
         progb = tsio.ProgressBar(maxValue=self.nslice)
-        for kkk in range(self.nslice):
+        for kkk in xrange(self.nslice):
             dat = self.data[kkk, :, :]
 
             if self.mask is None:
@@ -189,7 +189,7 @@ class STACK:
         out.ramparr = rampest
         logger.info('PROGRESS: Network deramp of IFGs.')
         progb = tsio.ProgressBar(maxValue=self.nslice)
-        for kkk in range(self.nslice):
+        for kkk in xrange(self.nslice):
             dat = self.data[kkk, :, :]
             ramp = su.deramp(dat, rampest[kkk, :])
             sub =  ramp[self.ref[0]:self.ref[1], self.ref[2]:self.ref[3]]
@@ -238,7 +238,7 @@ class STACK:
         logger.info('Estimating ramp coefficients')
 
         progb = tsio.ProgressBar(maxValue=self.nslice)
-        for kkk in range(self.nslice):
+        for kkk in xrange(self.nslice):
             ifg = self.data[kkk, :, :]
             row = self.conn[kkk,:]
             mast = np.flatnonzero(row==1)
@@ -267,7 +267,7 @@ class STACK:
                 
             dph = np.zeros(nvalid)
             dpherr = np.zeros(nvalid)
-            for ppp in range(nvalid):
+            for ppp in xrange(nvalid):
                 pind = ind[ppp]
                 data = ifg[miny[pind]:maxy[pind], minx[pind]:maxx[pind]]
                 dph[ppp] = su.nanmean(data)
@@ -301,7 +301,7 @@ class STACK:
         out.ramparr = ramparr
         logger.info('Correcting interferograms.')
         progb = tsio.ProgressBar(maxValue=self.nslice)
-        for kkk in range(self.nslice):
+        for kkk in xrange(self.nslice):
             ifg = self.data[kkk, :, :]
             row = self.conn[kkk,:]
             mast = np.flatnonzero(row==1)
@@ -337,7 +337,7 @@ class STACK:
         Alist = []
         logger.info('Decomposing interferograms.')
         progb = tsio.ProgressBar(maxValue=self.nslice)
-        for kk in range(self.nslice):
+        for kk in xrange(self.nslice):
             Aobj = trp.gslice(self.data[kk,:,:], ramp=3, looks = looks)
             Aobj.decompose(minscale=minscale, maxscale=maxscale, thresh=thresh)
             match = Aobj.fitscales(Tobj, tolr=tolr, tolx=tolx, ngroup=ngroup, niter=niter)
@@ -356,7 +356,7 @@ class STACK:
    
         fn = np.dot(H,tropfn)
         progb = tsio.ProgressBar(maxValue=self.nslice)
-        for kk in range(self.conn.shape[1]):
+        for kk in xrange(self.conn.shape[1]):
             corr = -fn[kk,0]*dem - fn[kk,1]
             corr = corr-st.nanmean(corr)
             out.setslice(kk, corr)
@@ -373,13 +373,13 @@ class STACK:
         numcycper = np.zeros(self.nslice, dtype=np.int)
         
         progb = tsio.ProgressBar(maxValue=self.nslice)
-        for kkk in range(self.nslice):
+        for kkk in xrange(self.nslice):
             cycind = np.flatnonzero(self.cycs[:, 0] == (kkk + 1))
             numcycper[kkk] = len(cycind)
             orig = self.data[kkk, :, :]
             resarr = np.zeros((numcycper[kkk], nlen, nwid), dtype=np.int)
             
-            for img in range(numcycper[kkk]):
+            for img in xrange(numcycper[kkk]):
                 ind = cycind[img]
                 sgn1 = np.sign(self.cycs[ind, 1])
                 ifg1 = np.abs(self.cycs[ind, 1]) - 1

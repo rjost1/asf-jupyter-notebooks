@@ -14,7 +14,7 @@
    20121217: Most of the class methods are deprecated and replaced with methods from adore module.
 '''
 import numpy as np
-from . import adore
+import adore
 
 class doris:
     '''Class object for reading DORIS output files.'''
@@ -53,7 +53,7 @@ class doris:
         if len(parts) < 2:
             return None
 
-        for kk in range(len(parts)):
+        for kk in xrange(len(parts)):
             parts[kk] = ''.join(parts[kk].split())
         return parts
 

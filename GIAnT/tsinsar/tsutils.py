@@ -10,8 +10,8 @@
 
 import numpy as np
 import datetime as dt
-from . import matutils as mu
-from . import logmgr
+import matutils as mu
+import logmgr
 import sys
 try:
     from scipy import factorial
@@ -58,7 +58,7 @@ def ConnectMatrix(dates,sensor):
     uscenes = uscenes[ind,:]
 
     ConnMat = np.zeros((Nifg,Nsar))
-    for k in range(Nifg):
+    for k in xrange(Nifg):
         mind = np.where((uscenes[:,0] == dates[k,0]) & (uscenes[:,1] == sensor[k]))
         sind = np.where((uscenes[:,0] == dates[k,1]) & (uscenes[:,1] == sensor[k]))
         ConnMat[k,mind[0]] = 1.0
@@ -98,13 +98,13 @@ def ConnectMatrixUAVSAR(dates,sensor):
     Uts = datenum([k[0:6] for k in uscenes[:,0]])
     hrs = np.array([np.int(k[-2:]) for k in uscenes[:,0]])
    
-    print(hrs) 
+    print hrs 
     ind = np.lexsort((uscenes[:,1],Uts))                    #Increasing order of time
     uscenes = uscenes[ind,:]
     hrs = hrs[ind]
 
     ConnMat = np.zeros((Nifg,Nsar))
-    for k in range(Nifg):
+    for k in xrange(Nifg):
         mind = np.where((uscenes[:,0] == dates[k,0]) & (uscenes[:,1] == sensor[k]))
         sind = np.where((uscenes[:,0] == dates[k,1]) & (uscenes[:,1] == sensor[k]))
         ConnMat[k,mind[0]] = 1.0 
@@ -129,7 +129,7 @@ def conntoPairmat(Jmat):
     
     Nifg = Jmat.shape[0]
     Pmat = np.zeros((Nifg,2))
-    for k in range(Nifg):
+    for k in xrange(Nifg):
         ind = np.flatnonzero(Jmat[k,:])
         Pmat[k,:] = ind
     
@@ -153,7 +153,7 @@ def conntoAdjmat(Jmat):
     Amat = np.zeros((Nsar,Nsar))
     Aind = np.zeros((Nsar,Nsar))
 
-    for k in range(Nifg):
+    for k in xrange(Nifg):
         mind = np.flatnonzero(Jmat[k,:]==1)
         sind = np.flatnonzero(Jmat[k,:]==-1)
         Amat[mind,sind]=1
@@ -179,7 +179,7 @@ def adjmattoAdjlist(Amat):
     Nsar = Amat.shape[0]
     alist = []
 
-    for k in range(Nsar):
+    for k in xrange(Nsar):
         comb = np.flatnonzero(Amat[k,:])
         alist.append(comb)
 
@@ -207,7 +207,7 @@ def simpleCycle(Jmat):
     alist = adjmattoAdjlist(Amat)
 
     cycs = []
-    for k in range(Nifg):
+    for k in xrange(Nifg):
         mast = np.flatnonzero(Jmat[k,:] == 1)
         slav = np.flatnonzero(Jmat[k,:] == -1)
         
@@ -262,7 +262,7 @@ def Jmattofolds(Jmat, kfolds, type='ifg'):
             if trnbreak[-1] != (Nifg-1):
                 trnbreak = np.append(trnbreak,Nifg-1)
 
-        for ii in range(kfolds):
+        for ii in xrange(kfolds):
             itrain = pos[trnbreak[ii]:trnbreak[ii+1]]
 
             if type=='sar':
@@ -273,7 +273,7 @@ def Jmattofolds(Jmat, kfolds, type='ifg'):
             trainlist.append(itrain)
             testlist.append(itest)
 
-        for ii in range(kfolds):
+        for ii in xrange(kfolds):
             flag = flag & (len(trainlist[ii]) > 2)
 
         flag = not flag
@@ -300,12 +300,12 @@ def bspline_nu(n,tk,t):
     B = np.zeros((len(tk),len(t)))
     assert (n+1) < len(tk), 'Not enough knots for order %d bspline'%(n)
 
-    for m in range(len(tk)-1):
+    for m in xrange(len(tk)-1):
         ind = where((t>=tk[m]) & (t<tk[m+1]))
         B[m,ind] = 1.0
 
-    for p in range(n):
-        for q in range(len(tk)-2-p):
+    for p in xrange(n):
+        for q in xrange(len(tk)-2-p):
             B[q,:] = ((t-tk[q])/(tk[p+q+1]-tk[q]))*B[q,:] + ((tk[p+q+2]-t)/(tk[p+q+2]-tk[q+1]))*B[q+1,:]
 
     ihalf = np.int_((n+1)/2)
@@ -365,7 +365,7 @@ def Timefn(rep,t):
     rflag = []      #Regularization flag
     vname = []      #Parameter name
     regstart = 1    #Set of params that need to be regularized together
-    for k in range(Nrep):
+    for k in xrange(Nrep):
         fn = rep[k]	
         fname = fn[0].upper()
         if fname in ('LINEAR'):  #f = (t-t1)
@@ -374,7 +374,7 @@ def Timefn(rep,t):
 
             ts = fn[1]
 
-            for m in range(len(ts)):
+            for m in xrange(len(ts)):
                 logger.info('Adding Line at T = %f'%(ts[m]))
                 hfn = (t-ts[m])
                 vn = 'LINE/%2.3f'%(ts[m])
@@ -404,9 +404,9 @@ def Timefn(rep,t):
             ts = fn[2]
             
             assert len(order) == len(ts), 'POLY: Orders and times dont match'
-            for p in range(len(order)):
+            for p in xrange(len(order)):
                 g = (t-ts[p])
-                for m in range(order[p]+1):
+                for m in xrange(order[p]+1):
                     logger.info('Adding order %d at T = %f'%(m,ts[p]))
                     hfn = g**m
                     vn = 'P/%d/%2.1f'%(m,ts[p])
@@ -421,7 +421,7 @@ def Timefn(rep,t):
             assert num==1, 'Undefined QUADRATIC sequence'
             
             ts = fn[1]
-            for m in range(len(ts)):
+            for m in xrange(len(ts)):
                 logger.info('Adding quad at T = %f'%(ts[m]))
                 hfn = (t-ts[m])**2
                 vn = 'QUAD/%2.3f'%(ts[m])
@@ -433,8 +433,8 @@ def Timefn(rep,t):
         elif fname in ('OFFSET'): # constant offset
             num = len(fn) - 1
             if (num != 1):
-                print('Undefined sequence: ', fn)
-                print('Eg: [[\'OFFSET\'],[t_dummy]]')
+                print 'Undefined sequence: ', fn
+                print 'Eg: [[\'OFFSET\'],[t_dummy]]'
                 sys.exit(1)
             ts = fn[1]
             H.append(np.ones(t.shape, dtype=float))
@@ -449,7 +449,7 @@ def Timefn(rep,t):
             taus = fn[2]
             assert len(ts) == len(taus), 'EXP: Times and Taus dont match'
 
-            for m in range(len(ts)):
+            for m in xrange(len(ts)):
                 logger.info('Adding Exp at T = %f, Tau = %f'%(ts[m],taus[m]))
                 hfn = (1 - np.exp(-(t-ts[m])/taus[m]))*(t>=ts[m])
                 vn = 'EXP/%2.3f/%2.3f'%(ts[m],taus[m])
@@ -467,7 +467,7 @@ def Timefn(rep,t):
 
             assert len(ts) == len(taus), 'LOG: Times and Taus dont match'
 
-            for m in range(len(ts)):
+            for m in xrange(len(ts)):
                 logger.info('Adding Log at T= %f, Tau = %f'%(ts[m],taus[m]))
                 hfn = np.log(1.0+ ((t-ts[m])/taus[m])*(t>=ts[m]))
                 vn = 'LOG/%2.3f/%2.3f'%(ts[m],taus[m])
@@ -482,7 +482,7 @@ def Timefn(rep,t):
 
             ts = fn[1]
 
-            for m in range(len(ts)):
+            for m in xrange(len(ts)):
                 logger.info('Adding Step at T = %f'%(ts[m]))
                 hfn = 1.0*(t>=ts[m])
                 vn = 'STEP/%2.3f'%(ts[m])
@@ -497,7 +497,7 @@ def Timefn(rep,t):
 
             taus = fn[1]
 
-            for m in range(len(taus)):
+            for m in xrange(len(taus)):
                 logger.info('Adding cos with Tau = %f'%(taus[m]))
                 logger.info('Adding sin with Tau = %f'%(taus[m]))
                 #hfn = 1-np.cos(2*np.pi*t/taus[m])
@@ -524,11 +524,11 @@ def Timefn(rep,t):
 
             assert len(orders) == len(nums), 'BSPLINE: Orders and Numbers dont match. '
 
-            for m in range(len(orders)):
+            for m in xrange(len(orders)):
                 logger.info('Adding %d bsplines of order %d'%(nums[m],orders[m]))
                 ts = np.linspace(t.min(),t.max(),nums[m])
                 dtk = ts[2] - ts[1]
-                for p in range(len(ts)):
+                for p in xrange(len(ts)):
                     hfn = bspline(orders[m],dtk,t-ts[p])
                     vn = 'Bsp/%d/%d'%(p,orders[m])
                     rf = regstart
@@ -548,11 +548,11 @@ def Timefn(rep,t):
 
             assert len(orders) == len(nums), 'Orders and Numbers dont match.'
 
-            for m in range(len(orders)):
+            for m in xrange(len(orders)):
                 logger.info('Adding %d isplines of order %d'%(nums[m],orders[m]))
                 ts = np.linspace(t.min(),t.max(),nums[m])
                 dtk = ts[2] - ts[1]
-                for p in range(len(ts)):
+                for p in xrange(len(ts)):
                     hfn = ispline(orders[m],dtk,t-ts[p])
                     vn = 'Isp/{}/{}/{:5.3f}'.format(p,orders[m],dtk)
                     rf = regstart
@@ -570,7 +570,7 @@ def Timefn(rep,t):
             num = len(t)
             logger.info('Adding %d linear pieces (SBAS)'%(num))
 
-            for m in range(num):
+            for m in xrange(num):
                 hfn = np.zeros(num)
                 if m < master:
                     hfn[0:m+1] = -1
@@ -590,166 +590,166 @@ def Timefn(rep,t):
     return  H,vname,rflag
 
 def mName2Rep(mName):
-    ''' From mName given by TimeFn, returns the equivalent function representation
+	''' From mName given by TimeFn, returns the equivalent function representation
 
-    Args:
-        * mName   -> list of the model names
+	Args:
+		* mName   -> list of the model names
 
-    Returns:
-        * rep     -> list of parametric functions'''
+	Returns:
+		* rep     -> list of parametric functions'''
 
-    rep = []
+	rep = []	
 
-    m = 0
-    while m<len(mName):
+	m = 0
+	while m<len(mName):
 
-        # Get the model name
-        model = mName[m].split('/')
+		# Get the model name
+		model = mName[m].split('/')
 
-        if model[0] in ('LINE'):			# Case Linear
-            logger.info('Found a Linear function at T = %f'%(np.float(model[1])))
-            r = ['LINEAR',[np.float(model[1])]]
-            rep.append(r)
+		if model[0] in ('LINE'):			# Case Linear
+			logger.info('Found a Linear function at T = %f'%(np.float(model[1])))
+			r = ['LINEAR',[np.float(model[1])]]
+			rep.append(r)
 
-        elif model[0] in ('LINEFIN'):
-            logger.info('Found a Linear Finite function between T = %f and %f'%(np.float(model[1]),np.float(model[2])))
-            r = ['LINEAR_FINITE',[[np.float(model[1]),np.float(model[2])]]]
-            rep.append(r)
+		elif model[0] in ('LINEFIN'):
+			logger.info('Found a Linear Finite function between T = %f and %f'%(np.float(model[1]),np.float(model[2])))
+			r = ['LINEAR_FINITE',[[np.float(model[1]),np.float(model[2])]]]
+			rep.append(r)
 
-        elif model[0] in ('P'):				# Case Polynom
+		elif model[0] in ('P'):				# Case Polynom
+	
+			# Check how many orders in the poly function
+			tm = 1
+			polyflag = True
+			while polyflag:
+				if m+tm==len(mName):
+					polyflag = False
+				else:
+					tmodel = mName[m+tm].split('/')
+					if tmodel[0] in ('P') and tmodel[1] not in ('0'):
+						polyflag = True
+						tm+=1
+					else:
+						polyflag = False
 
-            # Check how many orders in the poly function
-            tm = 1
-            polyflag = True
-            while polyflag:
-                if m+tm==len(mName):
-                    polyflag = False
-                else:
-                    tmodel = mName[m+tm].split('/')
-                    if tmodel[0] in ('P') and tmodel[1] not in ('0'):
-                        polyflag = True
-                        tm+=1
-                    else:
-                        polyflag = False
+			tm = tm - 1
 
-            tm = tm - 1
+			logger.info('Found a Polynom of order %d '%tm)
+			r = ['POLY',[tm],[np.float(model[2])]]
+			rep.append(r)
+		
+			m = m + tm 
 
-            logger.info('Found a Polynom of order %d '%tm)
-            r = ['POLY',[tm],[np.float(model[2])]]
-            rep.append(r)
+		elif model[0] in ('QUAD'):			# Case Quadratic
+			logger.info('Found a Quadratic function at T = %f'%(np.float(model[1])))
+			r = ['QUADRATIC',[np.float(model[1])]]
+			rep.append(r)
 
-            m = m + tm
+		elif model[0] in ('OFFSET'):			# Case Offset
+			logger.info('Found an Offset function')
+			r = ['OFFSET',[0]]
+			rep.append(r)
 
-        elif model[0] in ('QUAD'):			# Case Quadratic
-            logger.info('Found a Quadratic function at T = %f'%(np.float(model[1])))
-            r = ['QUADRATIC',[np.float(model[1])]]
-            rep.append(r)
+		elif model[0] in ('EXP'):			# Case exponential
+			t1 = np.float(model[1])
+			tau = np.float(model[2])
+			logger.info('Found an Exp function at T = %f, with Tau = %f'%(t1,tau))
+			r = ['EXP',[t1],[tau]]
+			rep.append(r)
 
-        elif model[0] in ('OFFSET'):			# Case Offset
-            logger.info('Found an Offset function')
-            r = ['OFFSET',[0]]
-            rep.append(r)
+		elif model[0] in ('LOG'):			# Case Logarithm
+			t1 = np.float(model[1])
+			tau = np.float(model[2])
+			logger.info('Found a Log function at T = %f, with Tau = %f'%(t1,tau))
+			r = ['LOG',[t1],[tau]]
+			rep.append(r)
+	
+		elif model[0] in ('STEP'):			# Case step function
+			t1 = np.float(model[1])
+			logger.info('Found Step function at T = %f'%t1)
+			r = ['STEP',[t1]]
+			rep.append(r)
 
-        elif model[0] in ('EXP'):			# Case exponential
-            t1 = np.float(model[1])
-            tau = np.float(model[2])
-            logger.info('Found an Exp function at T = %f, with Tau = %f'%(t1,tau))
-            r = ['EXP',[t1],[tau]]
-            rep.append(r)
+		elif model[0] in ('COS'):			# Case seasonal
+			tau = np.float(model[1])
+			logger.info('Found Seasonal oscillation of period tau = %f'%(tau))
+			r = ['SEASONAL',[tau]]
+			rep.append(r)
+			m+=1
 
-        elif model[0] in ('LOG'):			# Case Logarithm
-            t1 = np.float(model[1])
-            tau = np.float(model[2])
-            logger.info('Found a Log function at T = %f, with Tau = %f'%(t1,tau))
-            r = ['LOG',[t1],[tau]]
-            rep.append(r)
+		elif model[0] in ('Bsp'):			# Case Bspline
+			
+			# Check how many B-Splines is there
+			tm = 1
+			bspflag = True
+			while bspflag:
+				if m+tm==len(mName):
+					bspflag = False
+				else:
+					tmodel = mName[m+tm].split('/')
+					if tmodel[0] in ('Bsp') and tmodel[1] not in ('0'):
+						bspflag = True
+						tm+=1
+					else:
+						bspflag = False
 
-        elif model[0] in ('STEP'):			# Case step function
-            t1 = np.float(model[1])
-            logger.info('Found Step function at T = %f'%t1)
-            r = ['STEP',[t1]]
-            rep.append(r)
+			order = np.int(model[2])
+			logger.info('Found %d B-Splines of order %d'%(tm,order))
+			r = ['BSPLINE',[order],[tm]]
+			rep.append(r)
+			m = m + tm - 1
 
-        elif model[0] in ('COS'):			# Case seasonal
-            tau = np.float(model[1])
-            logger.info('Found Seasonal oscillation of period tau = %f'%(tau))
-            r = ['SEASONAL',[tau]]
-            rep.append(r)
-            m+=1
+		elif model[0] in ('Isp'):			# Case ISpline
 
-        elif model[0] in ('Bsp'):			# Case Bspline
+			# Check How many I-splines is there
+			tm = 1
+			ispflag = True
+			while ispflag:
+				if m+tm==len(mName): 
+					ispflag = False
+				else:
+					tmodel = mName[m+tm].split('/')
+					if tmodel[0] in ('Isp') and tmodel[1] not in ('0'): 
+						ispflag = True
+						tm += 1
+					else:
+						ispflag = False
+			
+			order = np.int(model[2])
+			logger.info('Found %d I-Splines of order %d'%(tm,order))
+			r = ['ISPLINE',[order],[tm]] 
+			rep.append(r)  
+			m = m + tm - 1
 
-            # Check how many B-Splines is there
-            tm = 1
-            bspflag = True
-            while bspflag:
-                if m+tm==len(mName):
-                    bspflag = False
-                else:
-                    tmodel = mName[m+tm].split('/')
-                    if tmodel[0] in ('Bsp') and tmodel[1] not in ('0'):
-                        bspflag = True
-                        tm+=1
-                    else:
-                        bspflag = False
+		elif model[0] in ('SBAS'):
+			
+			# Check how many SBAS pieces is there
+			tm = 1
+			sbasflag = True
+			while sbasflag:
+				if m+tm==len(mName):
+					sbasflag=False
+				else:
+					tmodel = mName[m+tm].split('/')
+					if tmodel[0] in ('SBAS') and tmodel[1] not in ('0'):
+						sbasflag = True
+						tm += 1
+					else:
+						sbasflag = False
 
-            order = np.int(model[2])
-            logger.info('Found %d B-Splines of order %d'%(tm,order))
-            r = ['BSPLINE',[order],[tm]]
-            rep.append(r)
-            m = m + tm - 1
+			master = np.int(model[2])
+			logger.info('Found %d SBAS pieces with a master index %d'%(tm,master))
+			r = ['SBAS',master]
+			rep.append(r)
+			m = m + tm - 1 
+			
+		# Increase the pointer
+		m+=1
 
-        elif model[0] in ('Isp'):			# Case ISpline
-
-            # Check How many I-splines is there
-            tm = 1
-            ispflag = True
-            while ispflag:
-                if m+tm==len(mName):
-                    ispflag = False
-                else:
-                    tmodel = mName[m+tm].split('/')
-                    if tmodel[0] in ('Isp') and tmodel[1] not in ('0'):
-                        ispflag = True
-                        tm += 1
-                    else:
-                        ispflag = False
-
-            order = np.int(model[2])
-            logger.info('Found %d I-Splines of order %d'%(tm,order))
-            r = ['ISPLINE',[order],[tm]]
-            rep.append(r)
-            m = m + tm - 1
-
-        elif model[0] in ('SBAS'):
-
-            # Check how many SBAS pieces is there
-            tm = 1
-            sbasflag = True
-            while sbasflag:
-                if m+tm==len(mName):
-                    sbasflag=False
-                else:
-                    tmodel = mName[m+tm].split('/')
-                    if tmodel[0] in ('SBAS') and tmodel[1] not in ('0'):
-                        sbasflag = True
-                        tm += 1
-                    else:
-                        sbasflag = False
-
-            master = np.int(model[2])
-            logger.info('Found %d SBAS pieces with a master index %d'%(tm,master))
-            r = ['SBAS',master]
-            rep.append(r)
-            m = m + tm - 1
-
-        # Increase the pointer
-        m+=1
-
-    return rep
-
-
-
+	return rep
+			
+		
+	
 
 #######################Time-series utils##################################################
 
@@ -767,7 +767,7 @@ def grad1d(N):
         * gop  ->  Gradient operator matrix for a vector of length'''
     
     gop = np.zeros((N-1,N),dtype=np.float64)
-    for k in range(0,N-1):
+    for k in xrange(0,N-1):
         gop[k,k]=-1.0
         gop[k,k+1] = 1.0
         
@@ -785,7 +785,7 @@ def laplace1d(N):
         * lap   -> Laplacian operator matrix for a vector of length'''
     
     lap = np.zeros((N,N),dtype=np.float64)
-    for k in range(1,N-1):
+    for k in xrange(1,N-1):
         lap[k,k-1]=-1.0
         lap[k,k] = 2.0
         lap[k,k+1]=-1.0
@@ -799,48 +799,48 @@ def laplace1d(N):
     return lap
 
 def timegaussEQfilt(time,rep,tau):
-    ''' From a time vector and the time function applied, this
-        routine builds a filter kernel to avoid filtering through
-        the earthquakes
+        ''' From a time vector and the time function applied, this 
+            routine builds a filter kernel to avoid filtering through
+            the earthquakes
 
-    .. Args:
+        .. Args:
+                
+            * time              -> Time vector (np.array of floats)
+            * rep               -> functional form (from the userfn.py)
 
-        * time              -> Time vector (np.array of floats)
-        * rep               -> functional form (from the userfn.py)
-
-    .. Returns:
-
-        * gauss             -> Gaussian filter that comes out'''
-
-    # Build the filter
-    n = time.size
-    gauss = np.zeros((n,n))
-
-    # Get a list of STEPS
-    EQl = []
-    EQl.append([-1.0])
-    for i in range(len(rep)):
-        if rep[i][0] in ('STEP'):
-            EQl.append(rep[i][1])
-    EQl.append([time[-1]+1.0])
-    EQl = np.array(EQl)
+        .. Returns:
+            
+            * gauss             -> Gaussian filter that comes out'''
 
         # Build the filter
-    for i in range(EQl.size-1):
-        ind = np.flatnonzero( (time>EQl[i].__getitem__(0)) & (time<EQl[i+1].__getitem__(0)) )
-        t = time[ind]
-        gauss[ind[0]:ind[-1]+1,ind[0]:ind[-1]+1] = (t[None,:] - t[:,None])**2
-        gauss[ind[0]:ind[-1]+1,ind[0]:ind[-1]+1] = np.exp(-0.5*gauss[ind[0]:ind[-1]+1,ind[0]:ind[-1]+1]/(tau*tau))
+        n = time.size
+        gauss = np.zeros((n,n))
 
-    return gauss
+        # Get a list of STEPS
+	EQl = []
+	EQl.append([-1.0])
+	for i in xrange(len(rep)):
+	        if rep[i][0] in ('STEP'):
+        	        EQl.append(rep[i][1])	
+	EQl.append([time[-1]+1.0])
+	EQl = np.array(EQl)
+
+        # Build the filter
+	for i in xrange(EQl.size-1):
+	        ind = np.flatnonzero( (time>EQl[i].__getitem__(0)) & (time<EQl[i+1].__getitem__(0)) )
+	        t = time[ind]
+	        gauss[ind[0]:ind[-1]+1,ind[0]:ind[-1]+1] = (t[None,:] - t[:,None])**2
+	        gauss[ind[0]:ind[-1]+1,ind[0]:ind[-1]+1] = np.exp(-0.5*gauss[ind[0]:ind[-1]+1,ind[0]:ind[-1]+1]/(tau*tau))
+
+        return gauss
 
 ############################################################
 
 ####################Date-time utils##########################
 def datestr(num):
-    """Converts ordinal date array to list of yyyymmdd strings."""
+    '''Converts ordinal date array to list of yyyymmdd strings.'''
     daylist = []
-    for k in range(len(num)):
+    for k in xrange(len(num)):
         dobj = dt.date.fromordinal(np.int(num[k]))
         strobj = '%4d%02d%02d'%(dobj.year,dobj.month,dobj.day)
         daylist.append(strobj)
@@ -851,7 +851,7 @@ def datenum(datelist):
      array.'''
   
     Uts = np.zeros(len(datelist))
-    for k in range(len(datelist)):
+    for k in xrange(len(datelist)):
         dint = np.int(datelist[k])
         if dint < 1e7:
             dint = dint+2e7

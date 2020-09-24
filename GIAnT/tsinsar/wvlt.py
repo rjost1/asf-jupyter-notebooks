@@ -15,7 +15,7 @@ import numpy as np
 import h5py
 import pywt
 from scipy.ndimage.filters import convolve1d
-from . import logmgr
+import logmgr
 
 logger=logmgr.logger('giant')
 
@@ -96,8 +96,8 @@ def packcoeff(hin):
     
     res[iii[0]:iii[1], jjj[0]:jjj[1]] = hin[0]
     
-    for kkk in range(0, nlevels):
-        for qqq in range(3):
+    for kkk in xrange(0, nlevels):
+        for qqq in xrange(3):
             [iii, jjj] = get_corners((nnn, mmm), minlevel+kkk, qqq+2)
             res[iii[0]:iii[1], jjj[0]:jjj[1]] = hin[kkk+1][qqq]
 
@@ -126,9 +126,9 @@ def unpackcoeff(hin, minlevel):
     qnew = hin[iii[0]:iii[1], jjj[0]:jjj[1]]
     res.append(qnew)
     
-    for kkk in range(nlevels):
+    for kkk in xrange(nlevels):
         qqq = []
-        for quad in range(3):
+        for quad in xrange(3):
             [iii, jjj] = get_corners((nnn, mmm), minlevel+kkk, quad+2)
             qnew = hin[iii[0]:iii[1], jjj[0]:jjj[1]]
             qqq.append(qnew)
@@ -234,7 +234,7 @@ def impulse_resp(dims, fname, wvlt='db12'):
     fout.create_dataset('minlevel', data = minlevel)
     fout.create_dataset('nlevels', data = nlevels)
     logger.info('Wavelet = %s'%(wvlt))
-    for wtl in range(1, nlevels+1):
+    for wtl in xrange(1, nlevels+1):
         kkk = jscl - wtl
         logger.info('Processing scale: %d'%(kkk))
         p2k = 2**kkk
@@ -250,7 +250,7 @@ def impulse_resp(dims, fname, wvlt='db12'):
         ydt = np.zeros((p2r, numl))
 
         if numl == numw:
-            for ppp in range(numl):
+            for ppp in xrange(numl):
                 yyy = np.zeros(nnn)
                 yyy[(nnn/2)+ppp] = 1.0
                 fwy = pywt.wavedec(yyy, wtbasis, level=wtl, mode='per')
@@ -265,14 +265,14 @@ def impulse_resp(dims, fname, wvlt='db12'):
             xct = np.zeros((p2k, numw))
             xdt = np.zeros((p2k, numw))
 
-            for ppp in range(numl):
+            for ppp in xrange(numl):
                 yyy = np.zeros(nnn)
                 yyy[(nnn/2)+ppp] = 1.0
                 fwy = pywt.wavedec(yyy, wtbasis, level=wtl, mode='per')
                 yct[:, ppp] = fwy[0]
                 ydt[:, ppp] = fwy[1]
             
-            for qqq in range(numw):
+            for qqq in xrange(numw):
                 xxx = np.zeros(mmm)
                 xxx[(mmm/2)+qqq] = 1.0
                 
@@ -315,7 +315,7 @@ def coeff_weight(bmask, rname):
     fin = h5py.File(rname, 'r')
     minlevel = fin['minlevel'].value
 
-    for mind in range(minlevel, jscl):
+    for mind in xrange(minlevel, jscl):
         p2m = 2**mind
         p2r = p2m*(nnn/mmm)
         numi = nnn/p2r
@@ -341,8 +341,8 @@ def coeff_weight(bmask, rname):
         [yy3, xx3] = get_corners((nnn, mmm), mind, 2)
         [yy4, xx4] = get_corners((nnn, mmm), mind, 4)
 
-        for ppp in range(numi):
-            for qqq in range(numj):
+        for ppp in xrange(numi):
+            for qqq in xrange(numj):
                 btemp = bmask[ppp::numi, qqq::numj]
                 respy = convolve1d(btemp, cyy[:, ppp], axis=0,
                         mode='wrap')
