@@ -10,6 +10,7 @@ dependencies:
   - matplotlib
   - gdal
   - scipy
+  - weave
   - pip:
       - awscli
   
